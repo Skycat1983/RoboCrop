@@ -4,6 +4,7 @@
   "version": "1.0",
 
   "description": "Strips away all the invisble characters added by AI",
+  "homepage_url": "https://github.com/Skycat1983/firefox_extension",
 
   "icons": {
     "48": "icons/logo_48.png"
@@ -12,7 +13,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.mozilla.org/*"],
+      "matches": ["*://*.chatgpt.com/*"],
       "js": ["robonot.ts"]
     }
   ],
@@ -20,6 +21,6 @@
     "default_icon": {
       "19": "icons/toolbar.png"
     },
-    "default_title": "Whereami?"
+    "default_title": "Robonot"
   }
 }
