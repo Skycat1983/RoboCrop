@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "RoboCrop",
+  "version": "1.0",
+
+  "description": "Strips away all the invisble characters added by AI",
+  "homepage_url": "https://github.com/Skycat1983/firefox_extension",
+
+  "icons": {
+    "48": "icons/toolbar_black.png"
+  },
+
+  "background": {
+    "scripts": ["dist/scripts/background.js"]
+  },
+  "permissions": ["activeTab", "tabs", "storage"],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/scripts/content.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "icons/toolbar_black.png"
+    },
+    "default_title": "RoboCrop",
+    "default_popup": "src/pages/popup/popup.html"
+  }
+}
