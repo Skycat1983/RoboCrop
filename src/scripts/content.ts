@@ -71,6 +71,7 @@ function findAndReplaceInvisibleCharacters(): ReplacementResult {
   const traverseDOM = (node: Node): void => {
     // Process text nodes
     if (node.nodeType === Node.TEXT_NODE) {
+      console.log("Processing text node:", node.nodeValue);
       processTextNode(node as Text);
       return;
     }
