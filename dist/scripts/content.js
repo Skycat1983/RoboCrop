@@ -1,12 +1,5 @@
 "use strict";
-// document.body.style.border = "5px solid green";
 const charactersMap = {
-    // Test vowels - comment out or remove in production
-    // a: { replacement: "x", label: "Lowercase A" },
-    // e: { replacement: "x", label: "Lowercase E" },
-    // i: { replacement: "x", label: "Lowercase I" },
-    // o: { replacement: "x", label: "Lowercase O" },
-    // u: { replacement: "x", label: "Lowercase U" },
     // Hidden/control characters
     "\u00AD": { replacement: "", label: "Soft Hyphen" },
     "\u180E": { replacement: "", label: "Mongolian Vowel Separator" },
@@ -106,22 +99,93 @@ const createCountObject = () => {
         totalCount: 0,
         byCharacter: {},
     };
+    // Create a base byCharacter object with all possible characters initialized to 0
+    // This ensures we have a complete record, even if the filtered map changes
     Object.keys(charactersMap).forEach((char) => {
         countData.byCharacter[char] = 0;
     });
     return countData;
 };
+// Function to filter characters based on settings
+const getFilteredCharactersMap = (settings) => {
+    const filteredMap = {};
+    // Process each character by category
+    Object.keys(charactersMap).forEach((char) => {
+        const charCode = char.charCodeAt(0);
+        // Hidden/control characters
+        if (settings.hiddenControl &&
+            // Hidden/control character range
+            (char === "\u00AD" || // Soft Hyphen
+                char === "\u180E" || // Mongolian Vowel Separator
+                (charCode >= 0x200b && charCode <= 0x200f) || // Zero-width spaces, joiners, and direction marks
+                (charCode >= 0x202a && charCode <= 0x202e) || // Directional formatting
+                (charCode >= 0x2060 && charCode <= 0x2064) || // Word joiner and invisible operators
+                (charCode >= 0x206a && charCode <= 0x206f) || // Inhibit swapping, etc.
+                char === "\uFEFF") // Byte Order Mark
+        ) {
+            filteredMap[char] = charactersMap[char];
+        }
+        // Variation selectors
+        if (settings.variationSelectors &&
+            charCode >= 0xfe00 &&
+            charCode <= 0xfe0f) {
+            filteredMap[char] = charactersMap[char];
+        }
+        // Spaces
+        if (settings.spaces &&
+            (char === "\u00A0" || // Non-breaking Space
+                char === "\u1680" || // Ogham Space Mark
+                (charCode >= 0x2000 && charCode <= 0x200a) || // Various spaces
+                char === "\u202F" || // Narrow No-Break Space
+                char === "\u205F" || // Medium Mathematical Space
+                char === "\u3000") // Ideographic Space
+        ) {
+            filteredMap[char] = charactersMap[char];
+        }
+        // Dashes
+        if (settings.dashes &&
+            ((charCode >= 0x2012 && charCode <= 0x2015) || // Various dashes
+                char === "\u2212") // Minus Sign
+        ) {
+            filteredMap[char] = charactersMap[char];
+        }
+        // Quotes
+        if (settings.quotes &&
+            ((charCode >= 0x2018 && charCode <= 0x201f) || // Various quotes
+                (charCode >= 0x2032 && charCode <= 0x2036) || // Prime marks
+                char === "\u00AB" || // Left-Pointing Double Angle Quotation Mark
+                char === "\u00BB") // Right-Pointing Double Angle Quotation Mark
+        ) {
+            filteredMap[char] = charactersMap[char];
+        }
+    });
+    return filteredMap;
+};
+// Update current filtered map - initialize with all characters by default
+let currentFilteredCharactersMap = {
+    ...charactersMap,
+};
 const isTrackedCharacter = (char) => {
-    return !!charactersMap[char];
+    return !!currentFilteredCharactersMap[char];
 };
 const getCharacterData = (char) => {
-    return charactersMap[char];
+    return currentFilteredCharactersMap[char];
 };
 const incrementCharCount = (countData, char) => {
     countData.totalCount++;
     countData.byCharacter[char]++;
 };
-const findForbiddenChars = () => {
+const findForbiddenChars = (settings) => {
+    // Use default settings if none provided
+    const charSettings = settings || {
+        hiddenControl: true,
+        variationSelectors: true,
+        spaces: true,
+        dashes: true,
+        quotes: true,
+    };
+    // Update the filtered characters map based on settings
+    currentFilteredCharactersMap = getFilteredCharactersMap(charSettings);
     // add marker to indicate this has been run
     if (document.body.getAttribute("data-crosshairs-applied") === "true") {
         console.log("Crosshairs already applied, not adding again");
@@ -145,53 +209,18 @@ const findForbiddenChars = () => {
         }
         return createCountObject();
     }
-    // Add Google Font for tooltips
-    if (!document.getElementById("orbitron-font-style")) {
-        const fontLink = document.createElement("link");
-        fontLink.rel = "stylesheet";
-        fontLink.href =
-            "https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap";
-        fontLink.id = "orbitron-font-style";
-        document.head.appendChild(fontLink);
-        // Create a style element for custom tooltips
-        const tooltipStyle = document.createElement("style");
-        tooltipStyle.id = "tooltip-style";
-        tooltipStyle.textContent = `
-      .target_identified {
-        position: relative;
-      }
-      .target_identified:hover::after {
-        content: attr(title);
-        position: absolute;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 5px 10px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #00ff00;
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 600;
-        font-size: 12px;
-        white-space: nowrap;
-        z-index: 1000;
-        border: 1px solid #00ff00;
-        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-        border-radius: 4px;
-        pointer-events: none;
-      }
-    `;
-        document.head.appendChild(tooltipStyle);
-    }
+    // futuristic font for tooltip
+    initializeCustomStyles();
     // mark as having been applied
     document.body.setAttribute("data-crosshairs-applied", "true");
     const countData = createCountObject();
     console.log("Starting search for forbidden characters");
-    console.log("Characters being tracked:", Object.keys(charactersMap).map((char) => {
+    console.log("Characters being tracked:", Object.keys(currentFilteredCharactersMap).map((char) => {
         if (char.charCodeAt(0) < 32 ||
             (char.charCodeAt(0) >= 0x200b && char.charCodeAt(0) <= 0xfeff)) {
-            return `U+${char.charCodeAt(0).toString(16).padStart(4, "0")} (${charactersMap[char].label})`;
+            return `U+${char.charCodeAt(0).toString(16).padStart(4, "0")} (${currentFilteredCharactersMap[char].label})`;
         }
-        return `'${char}' (${charactersMap[char].label})`;
+        return `'${char}' (${currentFilteredCharactersMap[char].label})`;
     }));
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
     const nodesToProcess = [];
@@ -236,7 +265,7 @@ const findForbiddenChars = () => {
             const char = text[i];
             if (isTrackedCharacter(char)) {
                 const charData = getCharacterData(char);
-                // Create a span for the target character
+                // span for the target character (do not delete)
                 const span = document.createElement("span");
                 span.className = "target_identified";
                 // Add character data as attributes
@@ -557,9 +586,20 @@ const addCRTEffect = () => {
 };
 const removeAllEffects = () => {
     console.log("Removing all visual effects from the page");
+    // Remove CRT effect style
     const styleElement = document.getElementById("crt-effect-style");
     if (styleElement) {
         styleElement.remove();
+    }
+    // Remove tooltip style
+    const tooltipStyle = document.getElementById("tooltip-style");
+    if (tooltipStyle) {
+        tooltipStyle.remove();
+    }
+    // Remove Orbitron font
+    const fontStyle = document.getElementById("orbitron-font-style");
+    if (fontStyle) {
+        fontStyle.remove();
     }
     document.body.classList.remove("crt");
     document.body.setAttribute("data-crt-active", "false");
@@ -628,7 +668,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "activate") {
         try {
             addCRTEffect();
-            const countData = findForbiddenChars();
+            const countData = findForbiddenChars(message.settings);
             console.log("Result:", countData);
             sendResponse({
                 success: true,

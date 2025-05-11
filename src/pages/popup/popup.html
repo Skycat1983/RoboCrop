@@ -111,11 +111,101 @@
       .button-white:hover {
         background: rgba(0, 0, 0, 0.8);
       }
+
+      /* Settings styles */
+      .settings-container {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #00d9ff;
+        box-shadow: 0 0 8px rgba(0, 217, 255, 0.5);
+      }
+
+      .settings-title {
+        color: #00d9ff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 5px #00d9ff;
+        text-align: center;
+      }
+
+      .settings-group {
+        margin-bottom: 8px;
+      }
+
+      .settings-label {
+        color: white;
+        font-size: 12px;
+        display: block;
+        margin-bottom: 5px;
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+      }
+
+      .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        cursor: pointer;
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        margin-right: 5px;
+        cursor: pointer;
+      }
+
+      .checkbox-item label {
+        color: #e4fbff;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .checkbox-item input[type="checkbox"]:checked + label {
+        color: #00ff00;
+        text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+      }
     </style>
   </head>
   <body>
     <img src="../../assets/images/roboCropLogo.png" alt="RoboCrop" />
-    <button id="processPage" class="button-blue">Engage</button>
+
+    <div class="settings-container">
+      <div class="settings-title">CHARACTER DETECTION SETTINGS</div>
+
+      <div class="settings-group">
+        <!-- <span class="settings-label">Character Types:</span> -->
+        <div class="checkbox-container">
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-hidden-control" checked />
+            <label for="setting-hidden-control">Hidden/Control</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-variation-selectors" checked />
+            <label for="setting-variation-selectors">Variation Selectors</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-spaces" checked />
+            <label for="setting-spaces">Special Spaces</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-dashes" checked />
+            <label for="setting-dashes">Fancy Dashes</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-quotes" checked />
+            <label for="setting-quotes">Smart Quotes</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button id="processPage" class="button-blue">Scan</button>
     <button id="processCharacters" class="button-white">Eliminate</button>
 
     <script src="/dist/scripts/popup.js"></script>

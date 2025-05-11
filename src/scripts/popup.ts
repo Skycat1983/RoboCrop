@@ -1,5 +1,23 @@
 console.log("Popup script loaded");
 
+// Define interface for settings
+interface CharacterSettings {
+  hiddenControl: boolean;
+  variationSelectors: boolean;
+  spaces: boolean;
+  dashes: boolean;
+  quotes: boolean;
+}
+
+// Default settings
+const defaultSettings: CharacterSettings = {
+  hiddenControl: true,
+  variationSelectors: true,
+  spaces: true,
+  dashes: true,
+  quotes: true,
+};
+
 // Send a message when the popup is being unloaded/closed
 window.addEventListener("unload", () => {
   console.log("Popup closing, sending cleanup message");
@@ -34,10 +52,112 @@ document.addEventListener("DOMContentLoaded", () => {
     processCharactersButton.style.cursor = "not-allowed";
   }
 
+  // Get settings checkboxes
+  const hiddenControlCheckbox = document.getElementById(
+    "setting-hidden-control"
+  ) as HTMLInputElement;
+  const variationSelectorsCheckbox = document.getElementById(
+    "setting-variation-selectors"
+  ) as HTMLInputElement;
+  const spacesCheckbox = document.getElementById(
+    "setting-spaces"
+  ) as HTMLInputElement;
+  const dashesCheckbox = document.getElementById(
+    "setting-dashes"
+  ) as HTMLInputElement;
+  const quotesCheckbox = document.getElementById(
+    "setting-quotes"
+  ) as HTMLInputElement;
+
+  // Load saved settings or use defaults
+  browser.storage.local
+    .get("characterSettings")
+    .then((result) => {
+      const savedSettings = result.characterSettings as CharacterSettings;
+
+      if (savedSettings) {
+        console.log("Loaded saved settings:", savedSettings);
+
+        // Apply saved settings to checkboxes
+        if (hiddenControlCheckbox)
+          hiddenControlCheckbox.checked = savedSettings.hiddenControl;
+        if (variationSelectorsCheckbox)
+          variationSelectorsCheckbox.checked = savedSettings.variationSelectors;
+        if (spacesCheckbox) spacesCheckbox.checked = savedSettings.spaces;
+        if (dashesCheckbox) dashesCheckbox.checked = savedSettings.dashes;
+        if (quotesCheckbox) quotesCheckbox.checked = savedSettings.quotes;
+      } else {
+        console.log("No saved settings found, using defaults");
+        // Save default settings
+        browser.storage.local.set({ characterSettings: defaultSettings });
+      }
+    })
+    .catch((error) => {
+      console.error("Error loading settings:", error);
+    });
+
+  // Save settings on checkbox change
+  const saveSettings = () => {
+    const settings: CharacterSettings = {
+      hiddenControl: hiddenControlCheckbox?.checked || false,
+      variationSelectors: variationSelectorsCheckbox?.checked || false,
+      spaces: spacesCheckbox?.checked || false,
+      dashes: dashesCheckbox?.checked || false,
+      quotes: quotesCheckbox?.checked || false,
+    };
+
+    console.log("Saving settings:", settings);
+    browser.storage.local
+      .set({ characterSettings: settings })
+      .catch((error) => {
+        console.error("Error saving settings:", error);
+      });
+
+    // Reset visual effects when settings are changed
+    browser.tabs
+      .query({ active: true, currentWindow: true })
+      .then((tabs) => {
+        if (tabs[0]?.id) {
+          console.log(
+            "Settings changed, sending cleanup message to reset effects"
+          );
+          return browser.tabs.sendMessage(tabs[0].id, {
+            action: "cleanup",
+          });
+        }
+      })
+      .then(() => {
+        // Reset the processPage button to initial state
+        if (processPageButton) {
+          processPageButton.textContent = "Scan";
+          processPageButton.className = "button-blue";
+        }
+
+        // Reset and disable the eliminate button
+        if (processCharactersButton) {
+          processCharactersButton.textContent = "Eliminate";
+          processCharactersButton.className = "button-white";
+          processCharactersButton.setAttribute("disabled", "true");
+          processCharactersButton.style.opacity = "0.5";
+          processCharactersButton.style.cursor = "not-allowed";
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending cleanup message:", error);
+      });
+  };
+
+  // Add event listeners to checkboxes
+  hiddenControlCheckbox?.addEventListener("change", saveSettings);
+  variationSelectorsCheckbox?.addEventListener("change", saveSettings);
+  spacesCheckbox?.addEventListener("change", saveSettings);
+  dashesCheckbox?.addEventListener("change", saveSettings);
+  quotesCheckbox?.addEventListener("change", saveSettings);
+
   // Function to reset processPage button to initial state
   const resetProcessPageButton = () => {
     if (processPageButton) {
-      processPageButton.textContent = "Engage";
+      processPageButton.textContent = "Scan";
       processPageButton.className = "button-blue";
     }
   };
@@ -52,8 +172,20 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("tabs:");
         console.dir(tabs);
         if (tabs[0]?.id) {
+          // Get current settings to send with the message
+          const currentSettings: CharacterSettings = {
+            hiddenControl: hiddenControlCheckbox?.checked || false,
+            variationSelectors: variationSelectorsCheckbox?.checked || false,
+            spaces: spacesCheckbox?.checked || false,
+            dashes: dashesCheckbox?.checked || false,
+            quotes: quotesCheckbox?.checked || false,
+          };
+
+          console.log("Sending settings to content script:", currentSettings);
+
           return browser.tabs.sendMessage(tabs[0].id, {
             action: "activate",
+            settings: currentSettings,
           });
         }
       })
