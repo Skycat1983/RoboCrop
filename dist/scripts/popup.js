@@ -43,17 +43,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (const [char, count] of Object.entries(response.countData.byCharacter)) {
                     if (count > 0) {
                         const charCode = char.charCodeAt(0);
-                        console.log(`Character: ${char === "\u200B"
-                            ? "U+200B (zero-width space)"
-                            : char === "\u200C"
-                                ? "U+200C (zero-width non-joiner)"
-                                : char === "\u200D"
-                                    ? "U+200D (zero-width joiner)"
-                                    : char === "\u2060"
-                                        ? "U+2060 (word joiner)"
-                                        : char === "\uFEFF"
-                                            ? "U+FEFF (zero-width no-break space)"
-                                            : `'${char}' (U+${charCode.toString(16).padStart(4, "0")})`}, 
+                        console.log(`Character: ${char === "\u00A0"
+                            ? "U+00A0 (non-breaking space)"
+                            : char === "\u200B"
+                                ? "U+200B (zero-width space)"
+                                : char === "\u200C"
+                                    ? "U+200C (zero-width non-joiner)"
+                                    : char === "\u200D"
+                                        ? "U+200D (zero-width joiner)"
+                                        : char === "\u2060"
+                                            ? "U+2060 (word joiner)"
+                                            : char === "\u2061"
+                                                ? "U+2061 (function application)"
+                                                : char === "\u2062"
+                                                    ? "U+2062 (invisible times)"
+                                                    : char === "\u2063"
+                                                        ? "U+2063 (invisible separator)"
+                                                        : char === "\u2064"
+                                                            ? "U+2064 (invisible plus)"
+                                                            : char === "\uFEFF"
+                                                                ? "U+FEFF (byte order mark)"
+                                                                : `'${char}' (U+${charCode.toString(16).padStart(4, "0")})`}, 
                           Count: ${count}`);
                     }
                 }

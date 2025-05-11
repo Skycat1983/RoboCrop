@@ -7,15 +7,16 @@ const charactersMap = {
     o: { replacement: "x", label: "Lowercase O" },
     u: { replacement: "x", label: "Lowercase U" },
     // Invisible Unicode characters
-    "\u200B": { replacement: "␣", label: "Zero-width space" },
-    "\u200C": { replacement: "⁠", label: "Zero-width non-joiner" },
-    "\u200D": { replacement: "‍", label: "Zero-width joiner" },
-    "\u2060": { replacement: "⁠", label: "Word joiner" },
-    "\u2061": { replacement: "⁡", label: "Function application" },
-    "\u2062": { replacement: "⁢", label: "Invisible times" },
-    "\u2063": { replacement: "⁣", label: "Invisible separator" },
-    "\u2064": { replacement: "⁤", label: "Invisible plus" },
-    "\uFEFF": { replacement: "⁥", label: "Zero-width non-breaking space" },
+    "\u00A0": { replacement: " ", label: "Non-breaking space" },
+    "\u200B": { replacement: "", label: "Zero-width space" },
+    "\u200C": { replacement: "", label: "Zero-width non-joiner" },
+    "\u200D": { replacement: "", label: "Zero-width joiner" },
+    "\u2060": { replacement: "", label: "Word joiner" },
+    "\u2061": { replacement: "", label: "Function application" },
+    "\u2062": { replacement: "", label: "Invisible times" },
+    "\u2063": { replacement: "", label: "Invisible separator" },
+    "\u2064": { replacement: "", label: "Invisible plus" },
+    "\uFEFF": { replacement: "", label: "Byte Order Mark" },
 };
 const createCountObject = () => {
     const countData = {
@@ -100,7 +101,7 @@ const findForbiddenChars = () => {
                     span.title = charData.label; // Add tooltip
                 }
                 // Check if this is an invisible character
-                const isInvisible = /[\u200B\u200C\u200D\u2060-\u2064\uFEFF]/.test(char);
+                const isInvisible = /[\u00A0\u200B\u200C\u200D\u2060-\u2064\uFEFF]/.test(char);
                 // Style appropriately
                 span.style.display = "inline";
                 if (isInvisible) {
@@ -110,13 +111,12 @@ const findForbiddenChars = () => {
                     span.style.border = "1px dashed red";
                     span.style.padding = "0 2px";
                     span.style.margin = "0 1px";
-                    // Use replacement character from our map
-                    span.textContent = charData?.replacement || "□";
+                    // Display the character code and label instead of a replacement character
+                    span.textContent = `[${charData?.label || "Unknown"}]`;
                 }
                 else {
-                    // Styling for visible characters (like vowels)
                     span.style.color = "green";
-                    span.textContent = text[i]; // Keep original case
+                    span.textContent = text[i];
                 }
                 fragment.appendChild(span);
                 // Update count
@@ -151,8 +151,9 @@ const eliminateHighlightedChars = () => {
             const charData = getCharacterData(char);
             console.log(`Span #${index}: char code ${charCodeHex} (U+${charCodeHex.padStart(4, "0")}), label: ${span.getAttribute("data-char-label")}`);
             if (charData) {
-                // Replace with the replacement character
-                const textNode = document.createTextNode(charData.replacement);
+                // Create the appropriate replacement based on character
+                const replacement = charData.replacement;
+                const textNode = document.createTextNode(replacement);
                 span.parentNode?.replaceChild(textNode, span);
                 replacedCount++;
             }

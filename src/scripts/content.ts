@@ -13,15 +13,16 @@ const charactersMap: Record<string, CharData> = {
   u: { replacement: "x", label: "Lowercase U" },
 
   // Invisible Unicode characters
-  "\u200B": { replacement: "␣", label: "Zero-width space" },
-  "\u200C": { replacement: "⁠", label: "Zero-width non-joiner" },
-  "\u200D": { replacement: "‍", label: "Zero-width joiner" },
-  "\u2060": { replacement: "⁠", label: "Word joiner" },
-  "\u2061": { replacement: "⁡", label: "Function application" },
-  "\u2062": { replacement: "⁢", label: "Invisible times" },
-  "\u2063": { replacement: "⁣", label: "Invisible separator" },
-  "\u2064": { replacement: "⁤", label: "Invisible plus" },
-  "\uFEFF": { replacement: "⁥", label: "Zero-width non-breaking space" },
+  "\u00A0": { replacement: " ", label: "Non-breaking space" },
+  "\u200B": { replacement: "", label: "Zero-width space" },
+  "\u200C": { replacement: "", label: "Zero-width non-joiner" },
+  "\u200D": { replacement: "", label: "Zero-width joiner" },
+  "\u2060": { replacement: "", label: "Word joiner" },
+  "\u2061": { replacement: "", label: "Function application" },
+  "\u2062": { replacement: "", label: "Invisible times" },
+  "\u2063": { replacement: "", label: "Invisible separator" },
+  "\u2064": { replacement: "", label: "Invisible plus" },
+  "\uFEFF": { replacement: "", label: "Byte Order Mark" },
 };
 
 interface CountData {
@@ -151,9 +152,8 @@ const findForbiddenChars = (): CountData => {
         }
 
         // Check if this is an invisible character
-        const isInvisible = /[\u200B\u200C\u200D\u2060-\u2064\uFEFF]/.test(
-          char
-        );
+        const isInvisible =
+          /[\u00A0\u200B\u200C\u200D\u2060-\u2064\uFEFF]/.test(char);
 
         // Style appropriately
         span.style.display = "inline";
@@ -164,7 +164,9 @@ const findForbiddenChars = (): CountData => {
           span.style.border = "1px dashed red";
           span.style.padding = "0 2px";
           span.style.margin = "0 1px";
-          span.textContent = charData?.replacement || "□";
+
+          // Display the character code and label instead of a replacement character
+          span.textContent = `[${charData?.label || "Unknown"}]`;
         } else {
           span.style.color = "green";
           span.textContent = text[i];
@@ -220,8 +222,9 @@ const eliminateHighlightedChars = (): {
       );
 
       if (charData) {
-        // Replace with the replacement character
-        const textNode = document.createTextNode(charData.replacement);
+        // Create the appropriate replacement based on character
+        const replacement = charData.replacement;
+        const textNode = document.createTextNode(replacement);
         span.parentNode?.replaceChild(textNode, span);
         replacedCount++;
       }
