@@ -1,10 +1,10 @@
-# RoboCrop - Firefox Extension
+![RoboCrop Logo](src/assets/images/roboCropLogo.png)
 
-![RoboCrop Logo](icons/toolbar_black.png)
+<!-- ![RoboCrop Logo](icons/logo_96.png) -->
 
 ## Overview
 
-RoboCrop is a Firefox extension designed to detect and eliminate invisible or special characters often inserted by AI systems in text. These characters can cause formatting issues, affect copy-pasting, and make text behave unexpectedly. The extension scans web pages and highlights problematic characters, allowing users to eliminate them with a single click.
+RoboCrop is a Firefox extension designed to detect and eliminate invisible or special characters often inserted by AI systems in text. These characters can cause formatting issues, affect copy-pasting, and get your text flagged by detection software. The extension scans web pages and highlights problematic characters, allowing users to eliminate them with a single click.
 
 ## Features
 
