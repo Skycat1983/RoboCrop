@@ -1,7 +1,27 @@
 "use strict";
 console.log("Popup script loaded");
-// TODO: add rolling number count of instances found
-// TODO: add options (speed, characters, )
+// Send a message when the popup is being unloaded/closed
+window.addEventListener("unload", () => {
+    console.log("Popup closing, sending cleanup message");
+    // Send a cleanup message to active tab
+    browser.tabs
+        .query({ active: true, currentWindow: true })
+        .then((tabs) => {
+        if (tabs[0]?.id) {
+            browser.tabs
+                .sendMessage(tabs[0].id, {
+                action: "cleanup",
+            })
+                .catch((err) => {
+                // Ignore error if content script isn't ready or tab is no longer available
+                console.log("Cleanup message may not have been delivered:", err);
+            });
+        }
+    })
+        .catch((err) => {
+        console.error("Error sending cleanup message:", err);
+    });
+});
 document.addEventListener("DOMContentLoaded", () => {
     let processPageButton = document.getElementById("processPage");
     let processCharactersButton = document.getElementById("processCharacters");
