@@ -6,13 +6,6 @@ interface CharData {
 }
 
 const charactersMap: Record<string, CharData> = {
-  // Test vowels - comment out or remove in production
-  // a: { replacement: "x", label: "Lowercase A" },
-  // e: { replacement: "x", label: "Lowercase E" },
-  // i: { replacement: "x", label: "Lowercase I" },
-  // o: { replacement: "x", label: "Lowercase O" },
-  // u: { replacement: "x", label: "Lowercase U" },
-
   // Hidden/control characters
   "\u00AD": { replacement: "", label: "Soft Hyphen" },
   "\u180E": { replacement: "", label: "Mongolian Vowel Separator" },
@@ -171,6 +164,45 @@ const findForbiddenChars = (): CountData => {
     return createCountObject();
   }
 
+  // Adding Google Font for tooltips
+  if (!document.getElementById("orbitron-font-style")) {
+    const fontLink = document.createElement("link");
+    fontLink.rel = "stylesheet";
+    fontLink.href =
+      "https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap";
+    fontLink.id = "orbitron-font-style";
+    document.head.appendChild(fontLink);
+
+    // custom tooltips
+    const tooltipStyle = document.createElement("style");
+    tooltipStyle.id = "tooltip-style";
+    tooltipStyle.textContent = `
+      .target_identified {
+        position: relative;
+      }
+      .target_identified:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #00ff00;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        border: 1px solid #00ff00;
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        border-radius: 4px;
+        pointer-events: none;
+      }
+    `;
+    document.head.appendChild(tooltipStyle);
+  }
+
   // mark as having been applied
   document.body.setAttribute("data-crosshairs-applied", "true");
 
@@ -257,7 +289,7 @@ const findForbiddenChars = (): CountData => {
       if (isTrackedCharacter(char)) {
         const charData = getCharacterData(char);
 
-        // Create a span for the target character
+        // span for the target character (do not delete)
         const span = document.createElement("span");
         span.className = "target_identified";
 
@@ -658,6 +690,48 @@ const removeCRTEffect = (): void => {
     "Calling removeAllEffects from removeCRTEffect for backward compatibility"
   );
   removeAllEffects();
+};
+
+// Function to initialize the Orbitron font and tooltip styling
+const initializeCustomStyles = (): void => {
+  // Add Google Font for tooltips
+  if (!document.getElementById("orbitron-font-style")) {
+    const fontLink = document.createElement("link");
+    fontLink.rel = "stylesheet";
+    fontLink.href =
+      "https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap";
+    fontLink.id = "orbitron-font-style";
+    document.head.appendChild(fontLink);
+
+    // Create a style element for custom tooltips
+    const tooltipStyle = document.createElement("style");
+    tooltipStyle.id = "tooltip-style";
+    tooltipStyle.textContent = `
+      .target_identified {
+        position: relative;
+      }
+      .target_identified:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #00ff00;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        border: 1px solid #00ff00;
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        border-radius: 4px;
+        pointer-events: none;
+      }
+    `;
+    document.head.appendChild(tooltipStyle);
+  }
 };
 
 // listen for messages from the popup
