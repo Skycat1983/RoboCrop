@@ -7,7 +7,8 @@
   "homepage_url": "https://github.com/Skycat1983/firefox_extension",
 
   "icons": {
-    "48": "icons/toolbar_black.png"
+    "48": "icons/logo_48.png",
+    "96": "icons/logo_white_96.png"
   },
 
   "background": {
@@ -22,9 +23,7 @@
     }
   ],
   "browser_action": {
-    "default_icon": {
-      "19": "icons/7.png"
-    },
+    "default_icon": "icons/logo_48.png",
     "default_title": "RoboCrop",
     "default_popup": "src/pages/popup/popup.html"
   }
