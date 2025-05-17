@@ -144,9 +144,12 @@
       }
 
       .checkbox-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* gap: 1rem; */
+        /* display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 8px; */
       }
 
       .checkbox-item {
@@ -201,6 +204,10 @@
           <div class="checkbox-item">
             <input type="checkbox" id="setting-quotes" checked />
             <label for="setting-quotes">Smart Quotes</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="setting-vfx" checked />
+            <label for="setting-vfx">Show VFX</label>
           </div>
         </div>
       </div>

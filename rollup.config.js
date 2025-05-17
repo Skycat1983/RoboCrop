@@ -14,7 +14,7 @@ export default [
   },
   // Content Script Bundle
   {
-    input: "src/scripts/content.ts",
+    input: "src/scripts/content/index.ts",
     output: {
       file: "dist/scripts/content.js",
       format: "iife",

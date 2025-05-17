@@ -23,7 +23,7 @@
     }
   ],
   "browser_action": {
-    "default_icon": "icons/logo_48.png",
+    "default_icon": "icons/logo_white_small.png",
     "default_title": "RoboCrop",
     "default_popup": "src/pages/popup/popup.html"
   }
