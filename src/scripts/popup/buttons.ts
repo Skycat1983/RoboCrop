@@ -1,4 +1,4 @@
-import { getCurrentSettings } from "./settings";
+import { getSettings } from "./settings";
 
 const disableButton = (id: string) => {
   let button = document.getElementById(id);
@@ -28,14 +28,13 @@ export const resetButtons = () => {
 export const handleScanPage = (e: Event) => {
   e.preventDefault();
   console.log("clicked scan page", e.target);
-  const settings = getCurrentSettings();
-  console.dir("Settings in handleScanPage:", settings);
+  const { hiddenControl, variationSelectors, spaces, dashes, quotes, vfx } =
+    getSettings();
 };
 
 export const handleReplaceChars = () => {
   console.log("clicked replace chars");
-  const settings = getCurrentSettings();
-  console.dir("Settings in handleReplaceChars:", settings);
+  const settings = getSettings();
 };
 
 export const configureButtons = () => {

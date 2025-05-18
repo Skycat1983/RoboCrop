@@ -1,12 +1,25 @@
 import { getCheckboxes } from "./checkboxes";
-import { CharacterSettings, defaultSettings } from "./constants";
+import { RobocropSettings, defaultSettings } from "./constants";
+
+export const getSettings = (): RobocropSettings => {
+  const checkboxes = getCheckboxes();
+
+  return {
+    hiddenControl: checkboxes.hiddenControl?.checked || false,
+    variationSelectors: checkboxes.variationSelectors?.checked || false,
+    spaces: checkboxes.spaces?.checked || false,
+    dashes: checkboxes.dashes?.checked || false,
+    quotes: checkboxes.quotes?.checked || false,
+    vfx: checkboxes.vfx?.checked || false,
+  };
+};
 
 // Load the settings from the browser storage
 export const loadSettings = async () => {
   const checkboxes = getCheckboxes();
 
-  const result = await browser.storage.local.get("characterSettings");
-  const savedSettings = result.characterSettings as CharacterSettings;
+  const result = await browser.storage.local.get("robocropSettings");
+  const savedSettings = result.robocropSettings as RobocropSettings;
 
   if (savedSettings) {
     // console.dir("Loaded saved settings:", savedSettings);
@@ -20,28 +33,6 @@ export const loadSettings = async () => {
     console.log("No saved settings found, using defaults");
     await browser.storage.local.set({ characterSettings: defaultSettings });
   }
-};
-
-export const getCurrentSettings = (): CharacterSettings => {
-  const checkboxes = getCheckboxes();
-
-  return {
-    hiddenControl: checkboxes.hiddenControl?.checked || false,
-    variationSelectors: checkboxes.variationSelectors?.checked || false,
-    spaces: checkboxes.spaces?.checked || false,
-    dashes: checkboxes.dashes?.checked || false,
-    quotes: checkboxes.quotes?.checked || false,
-    vfx: checkboxes.vfx?.checked || false,
-  };
-};
-
-export const updateSetting = async (
-  setting: keyof CharacterSettings,
-  value: boolean
-) => {
-  const currentSettings = getCurrentSettings();
-  currentSettings[setting] = value;
-  await browser.storage.local.set({ characterSettings: currentSettings });
 };
 
 // Save the settings to the browser storage

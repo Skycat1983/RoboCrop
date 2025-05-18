@@ -1,4 +1,4 @@
-import { loadSettings, getCurrentSettings } from "./settings";
+import { loadSettings } from "./settings";
 
 import { configureButtons } from "./buttons";
 import { configureTooltips } from "./tooltips";

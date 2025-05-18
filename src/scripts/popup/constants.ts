@@ -1,5 +1,5 @@
 // Define interface for settings
-export interface CharacterSettings {
+export interface RobocropSettings {
   hiddenControl: boolean;
   variationSelectors: boolean;
   spaces: boolean;
@@ -9,7 +9,7 @@ export interface CharacterSettings {
 }
 
 // Default settings
-export const defaultSettings: CharacterSettings = {
+export const defaultSettings: RobocropSettings = {
   hiddenControl: true,
   variationSelectors: true,
   spaces: true,

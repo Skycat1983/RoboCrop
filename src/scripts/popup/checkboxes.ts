@@ -1,8 +1,5 @@
-import { settingDescriptions } from "./constants";
+import { RobocropSettings, defaultSettings } from "./constants";
 
-type SettingId = keyof typeof settingDescriptions;
-
-// Get the checkboxes from the DOM
 export const getCheckboxes = () => {
   return {
     hiddenControl: document.getElementById(
@@ -18,13 +15,28 @@ export const getCheckboxes = () => {
   };
 };
 
-export const handleChange = (e: Event) => {
-  console.log("checkbox changed", e.target);
+export const handleCheckboxChange = async (e: Event) => {
   const checkbox = e.target as HTMLInputElement;
-  const id = checkbox.id;
+  const id = checkbox.id.replace("setting-", "") as keyof RobocropSettings;
   const checked = checkbox.checked;
-  console.log("checkbox id", id);
-  console.log("checkbox checked", checked);
+
+  try {
+    // get current settings
+    const result = await browser.storage.local.get("robocropSettings");
+    const currentSettings = result.robocropSettings || defaultSettings;
+
+    // update the specific setting
+    const updatedSettings: RobocropSettings = {
+      ...currentSettings,
+      [id]: checked,
+    };
+
+    // save all settings
+    await browser.storage.local.set({ robocropSettings: updatedSettings });
+    console.log(`Updated settings in storage:`, updatedSettings);
+  } catch (error) {
+    console.error(`Error saving checkbox state in handleChange: `, error);
+  }
 };
 
 export const configureCheckboxes = () => {
@@ -33,6 +45,6 @@ export const configureCheckboxes = () => {
   );
 
   checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleChange);
+    checkbox.addEventListener("change", handleCheckboxChange);
   });
 };
