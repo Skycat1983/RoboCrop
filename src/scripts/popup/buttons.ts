@@ -28,8 +28,14 @@ export const resetButtons = () => {
 export const handleScanPage = (e: Event) => {
   e.preventDefault();
   console.log("clicked scan page", e.target);
-  const { hiddenControl, variationSelectors, spaces, dashes, quotes, vfx } =
-    getSettings();
+  const {
+    illegalControl,
+    unauthorizedSelectors,
+    anomalousSpaces,
+    illegitimateDashes,
+    prohibitedQuotes,
+    enhancedVisuals,
+  } = getSettings();
 };
 
 export const handleReplaceChars = () => {
@@ -37,18 +43,32 @@ export const handleReplaceChars = () => {
   const settings = getSettings();
 };
 
+const handleTabSwitch = (e: Event) => {
+  const target = e.target as HTMLElement;
+  if (!target.classList.contains("tab")) return;
+
+  document
+    .querySelectorAll(".tab")
+    .forEach((tab) => tab.classList.remove("active"));
+  document
+    .querySelectorAll(".tab-content")
+    .forEach((content) => content.classList.remove("active"));
+
+  target.classList.add("active");
+  const tabId = `${target.getAttribute("data-tab")}-tab`;
+  document.getElementById(tabId)?.classList.add("active");
+};
+
 export const configureButtons = () => {
   const findCharsButtonId = "processPage";
   const replaceCharsButtonId = "processCharacters";
 
-  const findCharsButton = document.getElementById(findCharsButtonId);
-  const replaceCharsButton = document.getElementById(replaceCharsButtonId);
+  document
+    .getElementById(findCharsButtonId)
+    ?.addEventListener("click", handleScanPage);
+  document
+    .getElementById(replaceCharsButtonId)
+    ?.addEventListener("click", handleReplaceChars);
 
-  if (findCharsButton) {
-    findCharsButton.addEventListener("click", handleScanPage);
-  }
-
-  if (replaceCharsButton) {
-    replaceCharsButton.addEventListener("click", handleReplaceChars);
-  }
+  document.querySelector(".tabs")?.addEventListener("click", handleTabSwitch);
 };

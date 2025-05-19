@@ -5,12 +5,12 @@ export const getSettings = (): RobocropSettings => {
   const checkboxes = getCheckboxes();
 
   return {
-    hiddenControl: checkboxes.hiddenControl?.checked || false,
-    variationSelectors: checkboxes.variationSelectors?.checked || false,
-    spaces: checkboxes.spaces?.checked || false,
-    dashes: checkboxes.dashes?.checked || false,
-    quotes: checkboxes.quotes?.checked || false,
-    vfx: checkboxes.vfx?.checked || false,
+    illegalControl: checkboxes.illegalControl?.checked || false,
+    unauthorizedSelectors: checkboxes.unauthorizedSelectors?.checked || false,
+    anomalousSpaces: checkboxes.anomalousSpaces?.checked || false,
+    illegitimateDashes: checkboxes.illegitimateDashes?.checked || false,
+    prohibitedQuotes: checkboxes.prohibitedQuotes?.checked || false,
+    enhancedVisuals: checkboxes.enhancedVisuals?.checked || false,
   };
 };
 
@@ -23,15 +23,16 @@ export const loadSettings = async () => {
 
   if (savedSettings) {
     // console.dir("Loaded saved settings:", savedSettings);
-    checkboxes.hiddenControl.checked = savedSettings.hiddenControl;
-    checkboxes.variationSelectors.checked = savedSettings.variationSelectors;
-    checkboxes.spaces.checked = savedSettings.spaces;
-    checkboxes.dashes.checked = savedSettings.dashes;
-    checkboxes.quotes.checked = savedSettings.quotes;
-    checkboxes.vfx.checked = savedSettings.vfx;
+    checkboxes.illegalControl.checked = savedSettings.illegalControl;
+    checkboxes.unauthorizedSelectors.checked =
+      savedSettings.unauthorizedSelectors;
+    checkboxes.anomalousSpaces.checked = savedSettings.anomalousSpaces;
+    checkboxes.illegitimateDashes.checked = savedSettings.illegitimateDashes;
+    checkboxes.prohibitedQuotes.checked = savedSettings.prohibitedQuotes;
+    checkboxes.enhancedVisuals.checked = savedSettings.enhancedVisuals;
   } else {
     console.log("No saved settings found, using defaults");
-    await browser.storage.local.set({ characterSettings: defaultSettings });
+    await browser.storage.local.set({ robocropSettings: defaultSettings });
   }
 };
 

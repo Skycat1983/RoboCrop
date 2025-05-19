@@ -1,79 +1,89 @@
 (function () {
     'use strict';
 
-    // Get the checkboxes from the DOM
+    // Default settings
+    const defaultSettings = {
+        illegalControl: true,
+        unauthorizedSelectors: true,
+        anomalousSpaces: true,
+        illegitimateDashes: true,
+        prohibitedQuotes: true,
+        enhancedVisuals: true,
+    };
+    const settingDescriptions = {
+        illegalControl: "Detects invisible control characters that can affect text layout and behavior but are not visible to the naked eye.",
+        unauthorizedSelectors: "Identifies special characters that modify the appearance of emojis and other Unicode symbols.",
+        anomalousSpaces: "Finds non-standard space characters that may look like regular spaces but behave differently.",
+        illegitimateDashes: "Locates typographic dashes (like em-dash or en-dash) that differ from standard hyphens.",
+        prohibitedQuotes: "Detects smart or curly quotes and apostrophes that replace straight quotes.",
+        enhancedVisuals: "Toggles visual effects to highlight detected special characters in the text.",
+    };
+
     const getCheckboxes = () => {
         return {
-            hiddenControl: document.getElementById("setting-hidden-control"),
-            variationSelectors: document.getElementById("setting-variation-selectors"),
-            spaces: document.getElementById("setting-spaces"),
-            dashes: document.getElementById("setting-dashes"),
-            quotes: document.getElementById("setting-quotes"),
-            vfx: document.getElementById("setting-vfx"),
+            illegalControl: document.getElementById("illegalControl"),
+            unauthorizedSelectors: document.getElementById("unauthorizedSelectors"),
+            anomalousSpaces: document.getElementById("anomalousSpaces"),
+            illegitimateDashes: document.getElementById("illegitimateDashes"),
+            prohibitedQuotes: document.getElementById("prohibitedQuotes"),
+            enhancedVisuals: document.getElementById("enhancedVisuals"),
         };
     };
-    const handleChange = (e) => {
-        console.log("checkbox changed", e.target);
+    const handleCheckboxChange = async (e) => {
         const checkbox = e.target;
         const id = checkbox.id;
         const checked = checkbox.checked;
-        console.log("checkbox id", id);
-        console.log("checkbox checked", checked);
+        try {
+            const result = await browser.storage.local.get("robocropSettings");
+            const currentSettings = result.robocropSettings || defaultSettings;
+            const updatedSettings = {
+                ...currentSettings,
+                [id]: checked,
+            };
+            await browser.storage.local.set({ robocropSettings: updatedSettings });
+            console.dir(`Updated settings in storage:`, updatedSettings);
+        }
+        catch (error) {
+            console.error(`Error saving checkbox state in handleChange: `, error);
+        }
     };
     const configureCheckboxes = () => {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener("change", handleChange);
+            checkbox.addEventListener("change", handleCheckboxChange);
         });
     };
 
-    // Default settings
-    const defaultSettings = {
-        hiddenControl: true,
-        variationSelectors: true,
-        spaces: true,
-        dashes: true,
-        quotes: true,
-        vfx: true,
+    const getSettings = () => {
+        const checkboxes = getCheckboxes();
+        return {
+            illegalControl: checkboxes.illegalControl?.checked || false,
+            unauthorizedSelectors: checkboxes.unauthorizedSelectors?.checked || false,
+            anomalousSpaces: checkboxes.anomalousSpaces?.checked || false,
+            illegitimateDashes: checkboxes.illegitimateDashes?.checked || false,
+            prohibitedQuotes: checkboxes.prohibitedQuotes?.checked || false,
+            enhancedVisuals: checkboxes.enhancedVisuals?.checked || false,
+        };
     };
-    const settingDescriptions = {
-        "setting-hidden-control": "Detects invisible control characters that can affect text layout and behavior but are not visible to the naked eye.",
-        "setting-variation-selectors": "Identifies special characters that modify the appearance of emojis and other Unicode symbols.",
-        "setting-spaces": "Finds non-standard space characters that may look like regular spaces but behave differently.",
-        "setting-dashes": "Locates typographic dashes (like em-dash or en-dash) that differ from standard hyphens.",
-        "setting-quotes": "Detects smart or curly quotes and apostrophes that replace straight quotes.",
-        "setting-vfx": "Toggles visual effects to highlight detected special characters in the text.",
-    };
-
     // Load the settings from the browser storage
     const loadSettings = async () => {
         const checkboxes = getCheckboxes();
-        const result = await browser.storage.local.get("characterSettings");
-        const savedSettings = result.characterSettings;
+        const result = await browser.storage.local.get("robocropSettings");
+        const savedSettings = result.robocropSettings;
         if (savedSettings) {
             // console.dir("Loaded saved settings:", savedSettings);
-            checkboxes.hiddenControl.checked = savedSettings.hiddenControl;
-            checkboxes.variationSelectors.checked = savedSettings.variationSelectors;
-            checkboxes.spaces.checked = savedSettings.spaces;
-            checkboxes.dashes.checked = savedSettings.dashes;
-            checkboxes.quotes.checked = savedSettings.quotes;
-            checkboxes.vfx.checked = savedSettings.vfx;
+            checkboxes.illegalControl.checked = savedSettings.illegalControl;
+            checkboxes.unauthorizedSelectors.checked =
+                savedSettings.unauthorizedSelectors;
+            checkboxes.anomalousSpaces.checked = savedSettings.anomalousSpaces;
+            checkboxes.illegitimateDashes.checked = savedSettings.illegitimateDashes;
+            checkboxes.prohibitedQuotes.checked = savedSettings.prohibitedQuotes;
+            checkboxes.enhancedVisuals.checked = savedSettings.enhancedVisuals;
         }
         else {
             console.log("No saved settings found, using defaults");
-            await browser.storage.local.set({ characterSettings: defaultSettings });
+            await browser.storage.local.set({ robocropSettings: defaultSettings });
         }
-    };
-    const getCurrentSettings = () => {
-        const checkboxes = getCheckboxes();
-        return {
-            hiddenControl: checkboxes.hiddenControl?.checked || false,
-            variationSelectors: checkboxes.variationSelectors?.checked || false,
-            spaces: checkboxes.spaces?.checked || false,
-            dashes: checkboxes.dashes?.checked || false,
-            quotes: checkboxes.quotes?.checked || false,
-            vfx: checkboxes.vfx?.checked || false,
-        };
     };
     // Save the settings to the browser storage
     // export const saveSettings = async (
@@ -113,25 +123,36 @@
     const handleScanPage = (e) => {
         e.preventDefault();
         console.log("clicked scan page", e.target);
-        const settings = getCurrentSettings();
-        console.dir("Settings in handleScanPage:", settings);
+        getSettings();
     };
     const handleReplaceChars = () => {
         console.log("clicked replace chars");
-        const settings = getCurrentSettings();
-        console.dir("Settings in handleReplaceChars:", settings);
+        getSettings();
+    };
+    const handleTabSwitch = (e) => {
+        const target = e.target;
+        if (!target.classList.contains("tab"))
+            return;
+        document
+            .querySelectorAll(".tab")
+            .forEach((tab) => tab.classList.remove("active"));
+        document
+            .querySelectorAll(".tab-content")
+            .forEach((content) => content.classList.remove("active"));
+        target.classList.add("active");
+        const tabId = `${target.getAttribute("data-tab")}-tab`;
+        document.getElementById(tabId)?.classList.add("active");
     };
     const configureButtons = () => {
         const findCharsButtonId = "processPage";
         const replaceCharsButtonId = "processCharacters";
-        const findCharsButton = document.getElementById(findCharsButtonId);
-        const replaceCharsButton = document.getElementById(replaceCharsButtonId);
-        if (findCharsButton) {
-            findCharsButton.addEventListener("click", handleScanPage);
-        }
-        if (replaceCharsButton) {
-            replaceCharsButton.addEventListener("click", handleReplaceChars);
-        }
+        document
+            .getElementById(findCharsButtonId)
+            ?.addEventListener("click", handleScanPage);
+        document
+            .getElementById(replaceCharsButtonId)
+            ?.addEventListener("click", handleReplaceChars);
+        document.querySelector(".tabs")?.addEventListener("click", handleTabSwitch);
     };
 
     const configureTooltips = () => {

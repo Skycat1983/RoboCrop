@@ -1,17 +1,17 @@
-import { loadSettings, getCurrentSettings } from "./popup/settings";
-import { getCheckboxes } from "./popup/checkboxes";
-import { configureButtons } from "./popup/buttons";
-console.log("Popup index script loaded");
+// import { loadSettings, getCurrentSettings } from "./popup/settings";
+// import { getCheckboxes } from "./popup/checkboxes";
+// import { configureButtons } from "./popup/buttons";
+// console.log("Popup index script loaded");
 
-async function initialize() {
-  console.log("Initializing popup");
-  try {
-    await loadSettings();
-    configureButtons();
-  } catch (error) {
-    console.error("Error loading settings:", error);
-  }
-}
+// async function initialize() {
+//   console.log("Initializing popup");
+//   try {
+//     await loadSettings();
+//     configureButtons();
+//   } catch (error) {
+//     console.error("Error loading settings:", error);
+//   }
+// }
 // }
 
 // document.addEventListener("DOMContentLoaded", initialize);

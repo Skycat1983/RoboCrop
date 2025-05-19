@@ -174,44 +174,165 @@
         color: #00ff00;
         text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
       }
+
+      /* Tab styles */
+      .tabs {
+        display: flex;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #00d9ff;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 8px;
+        text-align: center;
+        color: #e4fbff;
+        cursor: pointer;
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        transition: 0.3s ease;
+        text-shadow: 0 0 8px #00d9ff;
+      }
+
+      .tab.active {
+        color: #00d9ff;
+        border-bottom: 2px solid #00d9ff;
+        box-shadow: 0 0 12px #00d9ff;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Stats styles */
+      .stats-container {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #00d9ff;
+        box-shadow: 0 0 8px rgba(0, 217, 255, 0.5);
+      }
+
+      .stats-title {
+        color: #00d9ff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 5px #00d9ff;
+        text-align: center;
+      }
+
+      .stats-group {
+        margin-bottom: 8px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px;
+        color: #666;
+        font-size: 12px;
+        transition: 0.3s ease;
+      }
+
+      .stat-item.active {
+        color: #e4fbff;
+      }
+
+      .stat-value {
+        font-family: "Orbitron", sans-serif;
+      }
     </style>
   </head>
   <body>
     <img src="../../assets/images/roboCropLogo.png" alt="RoboCrop" />
 
-    <div class="settings-container">
-      <div class="settings-title">CHARACTER DETECTION SETTINGS</div>
+    <div class="tabs" id="popupTabs">
+      <div class="tab active" data-tab="settings">Settings</div>
+      <div class="tab" data-tab="targets">Targets</div>
+    </div>
 
-      <div class="settings-group">
-        <!-- <span class="settings-label">Character Types:</span> -->
-        <div class="checkbox-container">
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-hidden-control" checked />
-            <label for="setting-hidden-control">Hidden/Control</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-variation-selectors" checked />
-            <label for="setting-variation-selectors">Variation Selectors</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-spaces" checked />
-            <label for="setting-spaces">Special Spaces</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-dashes" checked />
-            <label for="setting-dashes">Fancy Dashes</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-quotes" checked />
-            <label for="setting-quotes">Smart Quotes</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="setting-vfx" checked />
-            <label for="setting-vfx">Show VFX</label>
+    <div class="tab-content active" id="settings-tab">
+      <div class="settings-container">
+        <div class="settings-title">DETECTION SETTINGS</div>
+
+        <div class="settings-group">
+          <div class="checkbox-container">
+            <div class="checkbox-item">
+              <input type="checkbox" id="illegalControl" checked />
+              <label for="illegalControl">Illegal Control</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="unauthorizedSelectors" checked />
+              <label for="unauthorizedSelectors">Unauthorized Selectors</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="anomalousSpaces" checked />
+              <label for="anomalousSpaces">Anomalous Spaces</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="illegitimateDashes" checked />
+              <label for="illegitimateDashes">Illegitimate Dashes</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="prohibitedQuotes" checked />
+              <label for="prohibitedQuotes">Prohibited Quotes</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="enhancedVisuals" checked />
+              <label for="enhancedVisuals">Enhanced Visuals</label>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="tab-content" id="targets-tab">
+      <div class="stats-container">
+        <div class="stats-title">DETECTION STATISTICS</div>
+        <div class="stats-group">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span>Illegal Control</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span>Unauthorized Selectors</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span>Anomalous Spaces</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span>Illegitimate Dashes</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span>Prohibited Quotes</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span>Total</span>
+              <span class="stat-value">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <button id="processPage" class="button-blue">Scan</button>
     <button id="processCharacters" class="button-white">Eliminate</button>
 
