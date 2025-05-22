@@ -1,6 +1,25 @@
 (function () {
     'use strict';
 
+    const traverseDocument = () => {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+        const nodesToProcess = [];
+        let currentNode;
+        while ((currentNode = walker.nextNode())) {
+            const parentNode = currentNode.parentNode;
+            if (parentNode &&
+                (parentNode.nodeName === "SCRIPT" ||
+                    parentNode.nodeName === "STYLE" ||
+                    parentNode.nodeName === "NOSCRIPT")) {
+                continue;
+            }
+            if (currentNode.textContent && currentNode.textContent.trim()) {
+                nodesToProcess.push(currentNode);
+            }
+        }
+        console.log(`Found ${nodesToProcess.length} text nodes to process`);
+    };
+
     const removeAllEffects = () => {
         console.log("Removing all visual effects from the page");
         // Remove CRT effect style
@@ -250,15 +269,14 @@
         .then(() => console.log("✅ Content script announced itself"))
         .catch((error) => console.log("❌ Failed to announce content script:", error));
     function initializeContentScript() {
-        console.log("🎯 Content script initializing");
-        // Register listener immediately
+        console.log("🎯 Content script initializing on:", window.location.href);
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("📩 Content script received message:", message);
             try {
-                if (message.action === "scanPage") {
+                if (message.action === "scan") {
                     console.log("🔍 Starting page scan");
                     addCRTEffect();
-                    // handleScanPage();
+                    traverseDocument();
                     sendResponse({ received: true, status: "scan started" });
                 }
             }
@@ -271,18 +289,9 @@
             }
             return true;
         });
-        // Log that we're ready to receive messages
-        console.log("✅ Message listener registered and ready");
     }
-    // Initialize as soon as possible
+    // Initialize once when the script loads
     initializeContentScript();
-    // Also ensure initialization on DOM ready
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initializeContentScript);
-    }
-    else {
-        initializeContentScript();
-    }
     // Log that we reached the end of the script
     console.log("🔥 Content script evaluation complete");
     // content/index.ts

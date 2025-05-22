@@ -38,11 +38,30 @@
             button.classList.remove("button-white");
         }
     };
-    const handleButtonClick = (e) => {
+    const handleButtonClick = async (e) => {
         const target = e.target;
         console.log("🔵 Popup: Button clicked", target);
         const id = target.id;
         console.log("🔵 Popup: Button clicked", id);
+        try {
+            const [activeTab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!activeTab?.id) {
+                throw new Error("No active tab found");
+            }
+            const response = await browser.tabs.sendMessage(activeTab.id, {
+                action: "scan",
+            });
+            if (!response?.received) {
+                throw new Error(response?.error || "Unknown error from content script");
+            }
+        }
+        catch (error) {
+            console.error("🔴 Popup: Failed to activate content script:", error);
+            throw error;
+        }
     };
     const configButtons = () => {
         const buttons = document.querySelectorAll("button");
@@ -254,9 +273,9 @@
         try {
             await loadSettings();
             configTabs();
-            configButtons();
-            configureTooltips();
             configureCheckboxes();
+            configureTooltips();
+            configButtons();
         }
         catch (error) {
             console.error("Error initializing:", error);

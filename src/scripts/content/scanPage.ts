@@ -1,4 +1,4 @@
-const traverseDocument = () => {
+export const traverseDocument = () => {
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,

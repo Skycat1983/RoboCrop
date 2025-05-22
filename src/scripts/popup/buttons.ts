@@ -20,12 +20,34 @@ export const enableButton = () => {
   }
 };
 
-export const handleButtonClick = (e: Event) => {
+export const handleButtonClick = async (e: Event): Promise<void> => {
   const target = e.target as HTMLElement;
   console.log("🔵 Popup: Button clicked", target);
   const id = target.id;
 
   console.log("🔵 Popup: Button clicked", id);
+
+  try {
+    const [activeTab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (!activeTab?.id) {
+      throw new Error("No active tab found");
+    }
+
+    const response = await browser.tabs.sendMessage(activeTab.id, {
+      action: "scan",
+    });
+
+    if (!response?.received) {
+      throw new Error(response?.error || "Unknown error from content script");
+    }
+  } catch (error) {
+    console.error("🔴 Popup: Failed to activate content script:", error);
+    throw error;
+  }
 };
 
 export const configButtons = () => {

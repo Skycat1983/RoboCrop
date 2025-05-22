@@ -1,3 +1,4 @@
+import { traverseDocument } from "./scanPage";
 import { addCRTEffect, removeAllEffects } from "./vfx";
 
 console.log("🔥 Content script starting to load");
@@ -11,17 +12,17 @@ browser.runtime
   );
 
 function initializeContentScript() {
-  console.log("🎯 Content script initializing");
+  console.log("🎯 Content script initializing on:", window.location.href);
 
-  // Register listener immediately
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("📩 Content script received message:", message);
 
     try {
-      if (message.action === "scanPage") {
+      if (message.action === "scan") {
         console.log("🔍 Starting page scan");
         addCRTEffect();
-        // handleScanPage();
+        traverseDocument();
+
         sendResponse({ received: true, status: "scan started" });
       }
     } catch (error: unknown) {
@@ -33,20 +34,10 @@ function initializeContentScript() {
     }
     return true;
   });
-
-  // Log that we're ready to receive messages
-  console.log("✅ Message listener registered and ready");
 }
 
-// Initialize as soon as possible
+// Initialize once when the script loads
 initializeContentScript();
-
-// Also ensure initialization on DOM ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeContentScript);
-} else {
-  initializeContentScript();
-}
 
 // Log that we reached the end of the script
 console.log("🔥 Content script evaluation complete");

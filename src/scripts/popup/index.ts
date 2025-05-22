@@ -1,5 +1,4 @@
 import { loadSettings } from "./settings";
-
 import { configButtons } from "./buttons";
 import { configureTooltips } from "./tooltips";
 import { configureCheckboxes } from "./checkboxes";
@@ -11,9 +10,9 @@ async function initializePopup() {
   try {
     await loadSettings();
     configTabs();
-    configButtons();
-    configureTooltips();
     configureCheckboxes();
+    configureTooltips();
+    configButtons();
   } catch (error) {
     console.error("Error initializing:", error);
   }
