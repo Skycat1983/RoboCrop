@@ -5,12 +5,12 @@ export const getSettings = (): RobocropSettings => {
   const checkboxes = getCheckboxes();
 
   return {
-    illegalControl: checkboxes.illegalControl?.checked || false,
-    unauthorizedSelectors: checkboxes.unauthorizedSelectors?.checked || false,
-    anomalousSpaces: checkboxes.anomalousSpaces?.checked || false,
-    illegitimateDashes: checkboxes.illegitimateDashes?.checked || false,
-    prohibitedQuotes: checkboxes.prohibitedQuotes?.checked || false,
-    enhancedVisuals: checkboxes.enhancedVisuals?.checked || false,
+    illegalControl: checkboxes.illegalControl.checked,
+    unauthorizedSelectors: checkboxes.unauthorizedSelectors.checked,
+    anomalousSpaces: checkboxes.anomalousSpaces.checked,
+    illegitimateDashes: checkboxes.illegitimateDashes.checked,
+    prohibitedQuotes: checkboxes.prohibitedQuotes.checked,
+    enhancedVisuals: checkboxes.enhancedVisuals.checked,
   };
 };
 

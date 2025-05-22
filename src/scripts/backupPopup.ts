@@ -1,4 +1,4 @@
-// import { loadSettings, getCurrentSettings } from "./popup/settings";
+// import { loadSettings } from "./popup/settings";
 // import { getCheckboxes } from "./popup/checkboxes";
 // import { configureButtons } from "./popup/buttons";
 // console.log("Popup index script loaded");

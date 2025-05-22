@@ -1,20 +1,22 @@
 import { loadSettings } from "./settings";
 
-import { configureButtons } from "./buttons";
+import { configButtons } from "./buttons";
 import { configureTooltips } from "./tooltips";
 import { configureCheckboxes } from "./checkboxes";
+import { configTabs } from "./tabs";
 console.log("Popup index script loaded");
 
-async function initialize() {
+async function initializePopup() {
   console.log("Initializing popup");
   try {
     await loadSettings();
-    configureButtons();
+    configTabs();
+    configButtons();
     configureTooltips();
     configureCheckboxes();
   } catch (error) {
-    console.error("Error loading settings:", error);
+    console.error("Error initializing:", error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", initialize);
+document.addEventListener("DOMContentLoaded", initializePopup);

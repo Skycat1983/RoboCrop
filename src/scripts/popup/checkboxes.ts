@@ -1,3 +1,4 @@
+import { disableButton, enableButton } from "./buttons";
 import { RobocropSettings, defaultSettings } from "./constants";
 
 export const getCheckboxes = () => {
@@ -35,6 +36,19 @@ export const handleCheckboxChange = async (e: Event) => {
       ...currentSettings,
       [id]: checked,
     };
+
+    const enabledSettings = Object.entries(updatedSettings).filter(
+      ([key, value]) => {
+        return value === true;
+      }
+    );
+
+    if (!enabledSettings.length) {
+      disableButton();
+    } else {
+      enableButton();
+    }
+    console.log("🔵 Popup: Enabled settings:", enabledSettings);
     await browser.storage.local.set({ robocropSettings: updatedSettings });
     console.dir(`Updated settings in storage:`, updatedSettings);
   } catch (error) {

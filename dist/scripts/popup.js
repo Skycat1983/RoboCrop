@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    const buttonId = "my-button";
     // Default settings
     const defaultSettings = {
         illegalControl: true,
@@ -18,6 +19,89 @@
         prohibitedQuotes: "Detects smart or curly quotes and apostrophes that replace straight quotes.",
         enhancedVisuals: "Toggles visual effects to highlight detected special characters in the text.",
     };
+
+    const disableButton = () => {
+        let button = document.getElementById(buttonId);
+        if (button) {
+            button.setAttribute("disabled", "true");
+            button.style.opacity = "0.5";
+            button.style.cursor = "not-allowed";
+            button.classList.add("button-white");
+        }
+    };
+    const enableButton = () => {
+        let button = document.getElementById(buttonId);
+        if (button) {
+            button.removeAttribute("disabled");
+            button.style.opacity = "1";
+            button.style.cursor = "pointer";
+            button.classList.remove("button-white");
+        }
+    };
+    const handleButtonClick = (e) => {
+        const target = e.target;
+        console.log("🔵 Popup: Button clicked", target);
+        const id = target.id;
+        console.log("🔵 Popup: Button clicked", id);
+    };
+    const configButtons = () => {
+        const buttons = document.querySelectorAll("button");
+        buttons.forEach((button) => {
+            button.addEventListener("click", handleButtonClick);
+        });
+    };
+    // export const handleActivateScanContentScript = async (
+    //   e: Event
+    // ): Promise<void> => {
+    //   e.preventDefault();
+    //   try {
+    //     const [activeTab] = await browser.tabs.query({
+    //       active: true,
+    //       currentWindow: true,
+    //     });
+    //     if (!activeTab?.id) {
+    //       throw new Error("No active tab found");
+    //     }
+    //     const response = await browser.tabs.sendMessage(activeTab.id, {
+    //       action: "scanPage",
+    //     });
+    //     if (!response?.received) {
+    //       throw new Error(response?.error || "Unknown error from content script");
+    //     }
+    //   } catch (error: unknown) {
+    //     console.error("🔴 Popup: Failed to activate content script:", error);
+    //     throw error;
+    //   }
+    // };
+    // ... rest of the code stays the same ...
+    // export const handleReplaceChars = () => {
+    //   console.log("clicked replace chars");
+    //   const settings = getSettings();
+    // };
+    // const handleTabSwitch = (e: Event) => {
+    //   const target = e.target as HTMLElement;
+    //   if (!target.classList.contains("tab")) return;
+    //   document
+    //     .querySelectorAll(".tab")
+    //     .forEach((tab) => tab.classList.remove("active"));
+    //   document
+    //     .querySelectorAll(".tab-content")
+    //     .forEach((content) => content.classList.remove("active"));
+    //   target.classList.add("active");
+    //   const tabId = `${target.getAttribute("data-tab")}-tab`;
+    //   document.getElementById(tabId)?.classList.add("active");
+    // };
+    // export const configureButtons = () => {
+    //   const findCharsButtonId = "processPage";
+    //   const replaceCharsButtonId = "processCharacters";
+    //   document
+    //     .getElementById(findCharsButtonId)
+    //     ?.addEventListener("click", handleActivateScanContentScript);
+    //   document
+    //     .getElementById(replaceCharsButtonId)
+    //     ?.addEventListener("click", handleReplaceChars);
+    //   document.querySelector(".tabs")?.addEventListener("click", handleTabSwitch);
+    // };
 
     const getCheckboxes = () => {
         return {
@@ -40,6 +124,16 @@
                 ...currentSettings,
                 [id]: checked,
             };
+            const enabledSettings = Object.entries(updatedSettings).filter(([key, value]) => {
+                return value === true;
+            });
+            if (!enabledSettings.length) {
+                disableButton();
+            }
+            else {
+                enableButton();
+            }
+            console.log("🔵 Popup: Enabled settings:", enabledSettings);
             await browser.storage.local.set({ robocropSettings: updatedSettings });
             console.dir(`Updated settings in storage:`, updatedSettings);
         }
@@ -54,17 +148,6 @@
         });
     };
 
-    const getSettings = () => {
-        const checkboxes = getCheckboxes();
-        return {
-            illegalControl: checkboxes.illegalControl?.checked || false,
-            unauthorizedSelectors: checkboxes.unauthorizedSelectors?.checked || false,
-            anomalousSpaces: checkboxes.anomalousSpaces?.checked || false,
-            illegitimateDashes: checkboxes.illegitimateDashes?.checked || false,
-            prohibitedQuotes: checkboxes.prohibitedQuotes?.checked || false,
-            enhancedVisuals: checkboxes.enhancedVisuals?.checked || false,
-        };
-    };
     // Load the settings from the browser storage
     const loadSettings = async () => {
         const checkboxes = getCheckboxes();
@@ -120,41 +203,6 @@
     //   }
     // };
 
-    const handleScanPage = (e) => {
-        e.preventDefault();
-        console.log("clicked scan page", e.target);
-        getSettings();
-    };
-    const handleReplaceChars = () => {
-        console.log("clicked replace chars");
-        getSettings();
-    };
-    const handleTabSwitch = (e) => {
-        const target = e.target;
-        if (!target.classList.contains("tab"))
-            return;
-        document
-            .querySelectorAll(".tab")
-            .forEach((tab) => tab.classList.remove("active"));
-        document
-            .querySelectorAll(".tab-content")
-            .forEach((content) => content.classList.remove("active"));
-        target.classList.add("active");
-        const tabId = `${target.getAttribute("data-tab")}-tab`;
-        document.getElementById(tabId)?.classList.add("active");
-    };
-    const configureButtons = () => {
-        const findCharsButtonId = "processPage";
-        const replaceCharsButtonId = "processCharacters";
-        document
-            .getElementById(findCharsButtonId)
-            ?.addEventListener("click", handleScanPage);
-        document
-            .getElementById(replaceCharsButtonId)
-            ?.addEventListener("click", handleReplaceChars);
-        document.querySelector(".tabs")?.addEventListener("click", handleTabSwitch);
-    };
-
     const configureTooltips = () => {
         // Get all checkbox containers
         const checkboxContainers = document.querySelectorAll(".checkbox-item");
@@ -179,19 +227,41 @@
         });
     };
 
+    const handleTabSwitch = (e) => {
+        const target = e.target;
+        if (!target.classList.contains("tab"))
+            return;
+        document
+            .querySelectorAll(".tab")
+            .forEach((tab) => tab.classList.remove("active"));
+        document
+            .querySelectorAll(".tab-content")
+            .forEach((content) => content.classList.remove("active"));
+        target.classList.add("active");
+        const tabId = `${target.getAttribute("data-tab")}-tab`;
+        document.getElementById(tabId)?.classList.add("active");
+    };
+    const configTabs = () => {
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", handleTabSwitch);
+        });
+    };
+
     console.log("Popup index script loaded");
-    async function initialize() {
+    async function initializePopup() {
         console.log("Initializing popup");
         try {
             await loadSettings();
-            configureButtons();
+            configTabs();
+            configButtons();
             configureTooltips();
             configureCheckboxes();
         }
         catch (error) {
-            console.error("Error loading settings:", error);
+            console.error("Error initializing:", error);
         }
     }
-    document.addEventListener("DOMContentLoaded", initialize);
+    document.addEventListener("DOMContentLoaded", initializePopup);
 
 })();

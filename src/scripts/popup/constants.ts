@@ -1,3 +1,5 @@
+export const buttonId = "my-button";
+
 // Define interface for settings
 export interface RobocropSettings {
   illegalControl: boolean;
