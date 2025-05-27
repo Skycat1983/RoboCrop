@@ -1,13 +1,5 @@
 import { RobocropSettings } from "../popup/constants";
-import {
-  CharMap,
-  controlChars,
-  selectorChars,
-  spaceChars,
-  dashChars,
-  quoteChars,
-  allCharactersMap,
-} from "./constants";
+import { allCharactersMap } from "./constants";
 import { getCharacterData, isTrackedChar } from "./utils";
 
 // Type definition for character detection results
