@@ -20,6 +20,105 @@
         enhancedVisuals: "Toggles visual effects to highlight detected special characters in the text.",
     };
 
+    const handleTabSwitch = (e) => {
+        const target = e.target;
+        if (!target.classList.contains("tab"))
+            return;
+        document
+            .querySelectorAll(".tab")
+            .forEach((tab) => tab.classList.remove("active"));
+        document
+            .querySelectorAll(".tab-content")
+            .forEach((content) => content.classList.remove("active"));
+        target.classList.add("active");
+        const tabId = `${target.getAttribute("data-tab")}-tab`;
+        document.getElementById(tabId)?.classList.add("active");
+    };
+    const updateStatisticsTab = (countData) => {
+        console.log("📊 Updating statistics display with countData:", countData);
+        // Update individual category counts
+        Object.entries(countData.byCategory).forEach(([category, categoryData]) => {
+            const statItem = document.querySelector(`[data-category="${category}"]`);
+            const statElement = document.querySelector(`[data-category="${category}"] .stat-value`);
+            if (statElement && statItem) {
+                const count = categoryData.count;
+                statElement.textContent = count.toString();
+                // Update CSS classes based on count
+                if (count > 0) {
+                    statItem.classList.remove("stat-inactive");
+                    statItem.classList.add("stat-active");
+                    statElement.classList.remove("stat-value-inactive");
+                    statElement.classList.add("stat-value-active");
+                }
+                else {
+                    statItem.classList.remove("stat-active");
+                    statItem.classList.add("stat-inactive");
+                    statElement.classList.remove("stat-value-active");
+                    statElement.classList.add("stat-value-inactive");
+                }
+                console.log(`Updated ${category}: ${count} (${count > 0 ? "active" : "inactive"})`);
+            }
+            else {
+                console.warn(`Could not find stat element for category: ${category}`);
+            }
+        });
+        // Update total count
+        const totalItem = document.querySelector(`[data-category="total"]`);
+        const totalElement = document.querySelector(`[data-category="total"] .stat-value`);
+        if (totalElement && totalItem) {
+            const totalCount = countData.totalCount;
+            totalElement.textContent = totalCount.toString();
+            // Update CSS classes for total
+            if (totalCount > 0) {
+                totalItem.classList.remove("stat-inactive");
+                totalItem.classList.add("stat-active");
+                totalElement.classList.remove("stat-value-inactive");
+                totalElement.classList.add("stat-value-active");
+            }
+            else {
+                totalItem.classList.remove("stat-active");
+                totalItem.classList.add("stat-inactive");
+                totalElement.classList.remove("stat-value-active");
+                totalElement.classList.add("stat-value-inactive");
+            }
+            console.log(`Updated total: ${totalCount} (${totalCount > 0 ? "active" : "inactive"})`);
+        }
+        else {
+            console.warn("Could not find total stat element");
+        }
+    };
+    const resetStatisticsTab = () => {
+        console.log("📊 Resetting statistics display");
+        // Reset all stat values to 0 and set inactive state
+        const statItems = document.querySelectorAll(".stat-item");
+        const statElements = document.querySelectorAll(".stat-value");
+        statItems.forEach((item) => {
+            item.classList.remove("stat-active");
+            item.classList.add("stat-inactive");
+        });
+        statElements.forEach((element) => {
+            element.textContent = "0";
+            element.classList.remove("stat-value-active");
+            element.classList.add("stat-value-inactive");
+        });
+    };
+    const configTabs = () => {
+        // setup for tab buttons
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", handleTabSwitch);
+        });
+        // set initial inactive state for all stat tab items
+        const statItems = document.querySelectorAll(".stat-item");
+        const statElements = document.querySelectorAll(".stat-value");
+        statItems.forEach((item) => {
+            item.classList.add("stat-inactive");
+        });
+        statElements.forEach((element) => {
+            element.classList.add("stat-value-inactive");
+        });
+    };
+
     const disableButton = () => {
         let button = document.getElementById(buttonId);
         if (button) {
@@ -43,6 +142,8 @@
         console.log("🔵 Popup: Button clicked", target);
         const id = target.id;
         console.log("🔵 Popup: Button clicked", id);
+        // Reset statistics at the start of each scan
+        resetStatisticsTab();
         try {
             const [activeTab] = await browser.tabs.query({
                 active: true,
@@ -51,12 +152,31 @@
             if (!activeTab?.id) {
                 throw new Error("No active tab found");
             }
+            const settings = getSettings();
             const response = await browser.tabs.sendMessage(activeTab.id, {
                 action: "scan",
+                settings: settings,
             });
+            console.log("response in handleButtonClick:", response);
+            console.log("response type:", typeof response);
+            console.log("response.received:", response?.received);
+            console.log("response.foundCount:", response?.foundCount);
+            console.dir("response.countData:", response?.countData);
             if (!response?.received) {
-                throw new Error(response?.error || "Unknown error from content script");
+                throw new Error("Unknown error from content script");
             }
+            // change the button text to show 'eliminate' if there are characters found
+            if (response.foundCount > 0) {
+                target.classList.remove("button-blue");
+                target.classList.add("button-red");
+                target.textContent = "Eliminate";
+            }
+            else {
+                target.textContent = "Scan";
+                target.classList.remove("button-red");
+                target.classList.add("button-blue");
+            }
+            updateStatisticsTab(response.countData);
         }
         catch (error) {
             console.error("🔴 Popup: Failed to activate content script:", error);
@@ -64,63 +184,12 @@
         }
     };
     const configButtons = () => {
+        // Initialize statistics display
         const buttons = document.querySelectorAll("button");
         buttons.forEach((button) => {
             button.addEventListener("click", handleButtonClick);
         });
     };
-    // export const handleActivateScanContentScript = async (
-    //   e: Event
-    // ): Promise<void> => {
-    //   e.preventDefault();
-    //   try {
-    //     const [activeTab] = await browser.tabs.query({
-    //       active: true,
-    //       currentWindow: true,
-    //     });
-    //     if (!activeTab?.id) {
-    //       throw new Error("No active tab found");
-    //     }
-    //     const response = await browser.tabs.sendMessage(activeTab.id, {
-    //       action: "scanPage",
-    //     });
-    //     if (!response?.received) {
-    //       throw new Error(response?.error || "Unknown error from content script");
-    //     }
-    //   } catch (error: unknown) {
-    //     console.error("🔴 Popup: Failed to activate content script:", error);
-    //     throw error;
-    //   }
-    // };
-    // ... rest of the code stays the same ...
-    // export const handleReplaceChars = () => {
-    //   console.log("clicked replace chars");
-    //   const settings = getSettings();
-    // };
-    // const handleTabSwitch = (e: Event) => {
-    //   const target = e.target as HTMLElement;
-    //   if (!target.classList.contains("tab")) return;
-    //   document
-    //     .querySelectorAll(".tab")
-    //     .forEach((tab) => tab.classList.remove("active"));
-    //   document
-    //     .querySelectorAll(".tab-content")
-    //     .forEach((content) => content.classList.remove("active"));
-    //   target.classList.add("active");
-    //   const tabId = `${target.getAttribute("data-tab")}-tab`;
-    //   document.getElementById(tabId)?.classList.add("active");
-    // };
-    // export const configureButtons = () => {
-    //   const findCharsButtonId = "processPage";
-    //   const replaceCharsButtonId = "processCharacters";
-    //   document
-    //     .getElementById(findCharsButtonId)
-    //     ?.addEventListener("click", handleActivateScanContentScript);
-    //   document
-    //     .getElementById(replaceCharsButtonId)
-    //     ?.addEventListener("click", handleReplaceChars);
-    //   document.querySelector(".tabs")?.addEventListener("click", handleTabSwitch);
-    // };
 
     const getCheckboxes = () => {
         return {
@@ -167,6 +236,17 @@
         });
     };
 
+    const getSettings = () => {
+        const checkboxes = getCheckboxes();
+        return {
+            illegalControl: checkboxes.illegalControl.checked,
+            unauthorizedSelectors: checkboxes.unauthorizedSelectors.checked,
+            anomalousSpaces: checkboxes.anomalousSpaces.checked,
+            illegitimateDashes: checkboxes.illegitimateDashes.checked,
+            prohibitedQuotes: checkboxes.prohibitedQuotes.checked,
+            enhancedVisuals: checkboxes.enhancedVisuals.checked,
+        };
+    };
     // Load the settings from the browser storage
     const loadSettings = async () => {
         const checkboxes = getCheckboxes();
@@ -187,40 +267,6 @@
             await browser.storage.local.set({ robocropSettings: defaultSettings });
         }
     };
-    // Save the settings to the browser storage
-    // export const saveSettings = async (
-    //   processPageButton: HTMLButtonElement | null,
-    //   processCharactersButton: HTMLButtonElement | null
-    // ) => {
-    //   const checkboxes = getCheckboxes();
-    //   const settings: CharacterSettings = {
-    //     hiddenControl: checkboxes.hiddenControl?.checked || false,
-    //     variationSelectors: checkboxes.variationSelectors?.checked || false,
-    //     spaces: checkboxes.spaces?.checked || false,
-    //     dashes: checkboxes.dashes?.checked || false,
-    //     quotes: checkboxes.quotes?.checked || false,
-    //     vfx: checkboxes.vfx?.checked || false,
-    //   };
-    //   console.log("Saving settings:", settings);
-    //   await browser.storage.local.set({ characterSettings: settings });
-    //   const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    //   if (tabs[0]?.id) {
-    //     console.log("Settings changed, sending cleanup message to reset effects");
-    //     await browser.tabs.sendMessage(tabs[0].id, { action: "cleanup" });
-    //   }
-    //   // Reset buttons to initial state
-    //   if (processPageButton) {
-    //     processPageButton.textContent = "Scan";
-    //     processPageButton.className = "button-blue";
-    //   }
-    //   if (processCharactersButton) {
-    //     processCharactersButton.textContent = "Eliminate";
-    //     processCharactersButton.className = "button-white";
-    //     processCharactersButton.setAttribute("disabled", "true");
-    //     processCharactersButton.style.opacity = "0.5";
-    //     processCharactersButton.style.cursor = "not-allowed";
-    //   }
-    // };
 
     const configureTooltips = () => {
         // Get all checkbox containers
@@ -243,27 +289,6 @@
                 label.setAttribute("title", description);
                 label.setAttribute("aria-label", `${label.textContent} - ${description}`);
             }
-        });
-    };
-
-    const handleTabSwitch = (e) => {
-        const target = e.target;
-        if (!target.classList.contains("tab"))
-            return;
-        document
-            .querySelectorAll(".tab")
-            .forEach((tab) => tab.classList.remove("active"));
-        document
-            .querySelectorAll(".tab-content")
-            .forEach((content) => content.classList.remove("active"));
-        target.classList.add("active");
-        const tabId = `${target.getAttribute("data-tab")}-tab`;
-        document.getElementById(tabId)?.classList.add("active");
-    };
-    const configTabs = () => {
-        const tabs = document.querySelectorAll(".tab");
-        tabs.forEach((tab) => {
-            tab.addEventListener("click", handleTabSwitch);
         });
     };
 

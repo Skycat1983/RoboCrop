@@ -726,7 +726,7 @@
     }
   `;
         document.head.appendChild(styleElement);
-        // Also inject Google Font for tooltips if not already present
+        //  inject Google Font for tooltips
         if (!document.getElementById("orbitron-font-style")) {
             const fontLink = document.createElement("link");
             fontLink.rel = "stylesheet";
@@ -842,8 +842,9 @@
             let removedCount = 0;
             targetSpans.forEach((span) => {
                 try {
-                    // Get the original character text (simplified - just the textContent)
-                    const originalText = span.textContent || "";
+                    // Get the original character text from the text wrapper
+                    const textWrapper = span.querySelector(".text-wrapper");
+                    const originalText = textWrapper?.textContent || "";
                     // Create a text node with the original character
                     const textNode = document.createTextNode(originalText);
                     // Replace the span with the text node
@@ -1112,10 +1113,6 @@
         console.log("CRT effect added to the page");
     };
 
-    const getSettings = async () => {
-        const { robocropSettings } = await browser.storage.local.get("robocropSettings");
-        return robocropSettings;
-    };
     console.log("🔥 Content script starting to load");
     // Announce that content script is ready
     browser.runtime
@@ -1124,58 +1121,67 @@
         .catch((error) => console.log("❌ Failed to announce content script:", error));
     function initializeContentScript() {
         console.log("🎯 Content script initializing on:", window.location.href);
-        browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+        browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("📩 Content script received message:", message);
-            try {
-                if (message.action === "scan") {
-                    console.log("🔍 Starting page scan");
-                    const settings = await getSettings();
-                    const { enhancedVisuals } = settings;
-                    console.log("settings in content script", settings);
-                    // Phase 1: Scan for characters
-                    const scanResults = await scanPage(settings);
-                    console.log("scan results in content script", scanResults);
-                    // Phase 2: Apply highlighting if characters were found
-                    if (scanResults.foundCharacters.length > 0) {
-                        const highlightResults = await highlightCharacters(scanResults);
-                        console.log("highlight results in content script", highlightResults);
+            // Handle async operations properly
+            const handleMessage = async () => {
+                try {
+                    if (message.action === "scan") {
+                        console.log("🔍 Starting page scan");
+                        const { settings } = message;
+                        const { enhancedVisuals } = settings;
+                        console.log("settings in content script", settings);
+                        // Phase 1: Scan for characters
+                        const scanResults = await scanPage(settings);
+                        console.log("scan results in content script", scanResults);
+                        // Phase 2: Apply highlighting if characters were found
+                        if (scanResults.foundCharacters.length > 0) {
+                            const highlightResults = await highlightCharacters(scanResults);
+                            console.log("highlight results in content script", highlightResults);
+                        }
+                        // Phase 3: Apply enhanced visuals if enabled
+                        if (enhancedVisuals) {
+                            addCRTEffect();
+                        }
+                        const response = {
+                            received: true,
+                            status: "scan completed",
+                            countData: scanResults.countData,
+                            foundCount: scanResults.foundCharacters.length,
+                        };
+                        sendResponse(response);
+                        return;
                     }
-                    // Phase 3: Apply enhanced visuals if enabled
-                    if (enhancedVisuals) {
-                        addCRTEffect();
+                    if (message.action === "cleanup") {
+                        console.log("🧹 Received cleanup message from popup");
+                        try {
+                            // Remove highlighting
+                            removeHighlighting();
+                            // Remove CRT effects
+                            removeAllEffects();
+                            sendResponse({ received: true, status: "cleanup completed" });
+                        }
+                        catch (error) {
+                            console.error("❌ Error during cleanup:", error);
+                            sendResponse({
+                                received: false,
+                                error: error instanceof Error ? error.message : String(error),
+                            });
+                        }
+                        return;
                     }
+                }
+                catch (error) {
+                    console.error("❌ Error handling message:", error);
                     sendResponse({
-                        received: true,
-                        status: "scan completed",
-                        countData: scanResults.countData,
-                        foundCount: scanResults.foundCharacters.length,
+                        received: false,
+                        error: error instanceof Error ? error.message : String(error),
                     });
                 }
-                if (message.action === "cleanup") {
-                    console.log("🧹 Received cleanup message from popup");
-                    try {
-                        // Remove highlighting
-                        removeHighlighting();
-                        // Remove CRT effects
-                        removeAllEffects();
-                        sendResponse({ received: true, status: "cleanup completed" });
-                    }
-                    catch (error) {
-                        console.error("❌ Error during cleanup:", error);
-                        sendResponse({
-                            received: false,
-                            error: error instanceof Error ? error.message : String(error),
-                        });
-                    }
-                }
-            }
-            catch (error) {
-                console.error("❌ Error handling message:", error);
-                sendResponse({
-                    received: false,
-                    error: error instanceof Error ? error.message : String(error),
-                });
-            }
+            };
+            // Execute async handler
+            handleMessage();
+            // Return true to indicate we will send a response asynchronously
             return true;
         });
     }
@@ -1183,88 +1189,5 @@
     initializeContentScript();
     // Log that we reached the end of the script
     console.log("🔥 Content script evaluation complete");
-    // content/index.ts
-    // console.log("🚀 CONTENT SCRIPT LOADING", window.location.href);
-    // // Make sure we're in a web page context
-    // if (
-    //   window.location.protocol !== "about:" &&
-    //   window.location.protocol !== "mozilla:" &&
-    //   window.location.protocol !== "chrome:"
-    // ) {
-    //   const handleScanPage = () => {
-    //     console.log("Scanning page");
-    //   };
-    //   function initialiseContentScript() {
-    //     console.log("🎯 CONTENT SCRIPT INITIALIZED", window.location.href);
-    //     // Remove any existing listeners to avoid duplicates
-    //     browser.runtime.onMessage.removeListener(messageHandler);
-    //     // Define message handler separately so we can remove it
-    //     function messageHandler(message: any, sender: any, sendResponse: any) {
-    //       console.log("📨 CONTENT SCRIPT RECEIVED MESSAGE", message);
-    //       if (message.action === "scanPage") {
-    //         handleScanPage();
-    //         sendResponse({ received: true });
-    //         return true; // Keep the message channel open for async response
-    //       }
-    //     }
-    //     // Add the listener
-    //     browser.runtime.onMessage.addListener(messageHandler);
-    //     // Log success
-    //     console.log("✅ Content script ready for messages");
-    //   }
-    //   // Initialize immediately
-    //   initialiseContentScript();
-    // }
-    // // listen for messages from the popup
-    // browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    //   console.log("Content script received message:", message);
-    //   if (message.action === "activate") {
-    //     try {
-    //       addCRTEffect();
-    //       //   const countData = findForbiddenChars(message.settings);
-    //       //   console.log("Result:", countData);
-    //       sendResponse({
-    //         success: true,
-    //         // countData: countData,
-    //       });
-    //     } catch (error) {
-    //       console.error("Error in text replacement:", error);
-    //       sendResponse({
-    //         success: false,
-    //         error: error instanceof Error ? error.message : String(error),
-    //       });
-    //     }
-    //     return true;
-    //   }
-    //   if (message.action === "eliminate") {
-    //     try {
-    //       // const result = eliminateHighlightedChars();
-    //       removeAllEffects();
-    //       sendResponse({
-    //         success: true,
-    //         // replacedCount: result.replacedCount,
-    //       });
-    //     } catch (error) {
-    //       console.error("Error in elimination:", error);
-    //       sendResponse({
-    //         success: false,
-    //         error: error instanceof Error ? error.message : String(error),
-    //       });
-    //     }
-    //     return true;
-    //   }
-    //   if (message.action === "cleanup") {
-    //     console.log("Received cleanup message from popup");
-    //     try {
-    //       if (document.body.classList.contains("crt")) {
-    //         console.log("Removing CRT effect due to popup close");
-    //         removeAllEffects();
-    //       }
-    //     } catch (error) {
-    //       console.error("Error during cleanup:", error);
-    //     }
-    //     return true;
-    //   }
-    // });
 
 })();
