@@ -88,7 +88,7 @@ const injectHighlightingStyles = (): void => {
 
   document.head.appendChild(styleElement);
 
-  // Also inject Google Font for tooltips if not already present
+  //  inject Google Font for tooltips
   if (!document.getElementById("orbitron-font-style")) {
     const fontLink = document.createElement("link");
     fontLink.rel = "stylesheet";
