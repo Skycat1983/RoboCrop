@@ -1,6 +1,14 @@
-import { scanPage } from "./scanPage";
+import { CountData, scanPage } from "./scanPage";
 import { highlightCharacters, removeHighlighting } from "./highlightCharacters";
 import { addCRTEffect, removeAllEffects } from "./vfx";
+import { ScanMessage } from "../popup/buttons";
+
+export interface ScanResponse {
+  received: boolean;
+  status: string;
+  countData: CountData;
+  foundCount: number;
+}
 
 const getSettings = async () => {
   const { robocropSettings } = await browser.storage.local.get(
@@ -22,14 +30,15 @@ browser.runtime
 function initializeContentScript() {
   console.log("🎯 Content script initializing on:", window.location.href);
 
-  browser.runtime.onMessage.addListener(
-    async (message, sender, sendResponse) => {
-      console.log("📩 Content script received message:", message);
+  browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("📩 Content script received message:", message);
 
+    // Handle async operations properly
+    const handleMessage = async () => {
       try {
         if (message.action === "scan") {
           console.log("🔍 Starting page scan");
-          const settings = await getSettings();
+          const { settings } = message as ScanMessage;
           const { enhancedVisuals } = settings;
           console.log("settings in content script", settings);
 
@@ -51,12 +60,15 @@ function initializeContentScript() {
             addCRTEffect();
           }
 
-          sendResponse({
+          const response: ScanResponse = {
             received: true,
             status: "scan completed",
             countData: scanResults.countData,
             foundCount: scanResults.foundCharacters.length,
-          });
+          };
+
+          sendResponse(response);
+          return;
         }
 
         if (message.action === "cleanup") {
@@ -76,6 +88,7 @@ function initializeContentScript() {
               error: error instanceof Error ? error.message : String(error),
             });
           }
+          return;
         }
       } catch (error: unknown) {
         console.error("❌ Error handling message:", error);
@@ -84,9 +97,14 @@ function initializeContentScript() {
           error: error instanceof Error ? error.message : String(error),
         });
       }
-      return true;
-    }
-  );
+    };
+
+    // Execute async handler
+    handleMessage();
+
+    // Return true to indicate we will send a response asynchronously
+    return true;
+  });
 }
 
 // Initialize once when the script loads
