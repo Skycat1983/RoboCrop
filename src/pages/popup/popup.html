@@ -18,11 +18,45 @@
     />
 
     <div class="tabs" id="popupTabs">
-      <div class="tab active" data-tab="settings">Settings</div>
-      <div class="tab" data-tab="targets">Targets</div>
+      <div class="tab active" data-tab="targets">Targets</div>
+      <div class="tab" data-tab="settings">Settings</div>
     </div>
 
-    <div class="tab-content active" id="settings-tab">
+    <div class="tab-content active" id="targets-tab">
+      <div class="stats-container">
+        <div class="stats-title">DETECTION STATISTICS</div>
+        <div class="stats-group">
+          <div class="stats-grid">
+            <div class="stat-item" data-category="hiddenControl">
+              <span>Illegal Control</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item" data-category="variationSelectors">
+              <span>Unauthorized Selectors</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item" data-category="unusualSpaces">
+              <span>Anomalous Spaces</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item" data-category="nonStandardDashes">
+              <span>Illegitimate Dashes</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item" data-category="smartQuotes">
+              <span>Prohibited Quotes</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-item" data-category="total">
+              <span>Total</span>
+              <span class="stat-value">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="settings-tab">
       <div class="settings-container">
         <div class="settings-title">DETECTION SETTINGS</div>
 
@@ -51,40 +85,6 @@
             <div class="checkbox-item">
               <input type="checkbox" id="enhancedVisuals" checked />
               <label for="enhancedVisuals">Enhanced Visuals</label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="targets-tab">
-      <div class="stats-container">
-        <div class="stats-title">DETECTION STATISTICS</div>
-        <div class="stats-group">
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span>Illegal Control</span>
-              <span class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span>Unauthorized Selectors</span>
-              <span class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span>Anomalous Spaces</span>
-              <span class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span>Illegitimate Dashes</span>
-              <span class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span>Prohibited Quotes</span>
-              <span class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span>Total</span>
-              <span class="stat-value">0</span>
             </div>
           </div>
         </div>
