@@ -1,4 +1,4 @@
-import { ScanResponse } from "../content/index";
+import { ScanResponse } from "../types/types";
 
 const handleTabSwitch = (e: Event) => {
   const target = e.target as HTMLElement;
@@ -16,13 +16,11 @@ const handleTabSwitch = (e: Event) => {
   document.getElementById(tabId)?.classList.add("active");
 };
 
-export const updateStatisticsTab = (
-  countData: ScanResponse["countData"]
-): void => {
-  console.log("📊 Updating statistics display with countData:", countData);
+export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
+  console.dir("📊 Updating statistics display with results:", results);
 
   // Update individual category counts
-  Object.entries(countData.byCategory).forEach(([category, categoryData]) => {
+  Object.entries(results.byCategory).forEach(([category, categoryData]) => {
     const statItem = document.querySelector(
       `[data-category="${category}"]`
     ) as HTMLElement;
@@ -64,7 +62,7 @@ export const updateStatisticsTab = (
   ) as HTMLElement;
 
   if (totalElement && totalItem) {
-    const totalCount = countData.totalCount;
+    const totalCount = results.totalCount;
     totalElement.textContent = totalCount.toString();
 
     // Update CSS classes for total
