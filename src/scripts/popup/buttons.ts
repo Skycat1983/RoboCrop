@@ -1,10 +1,13 @@
-import { ScanResponse } from "../content/index";
-import { buttonId, RobocropSettings } from "./constants";
-import { getSettings } from "./settings";
+import { buttonId } from "../constants/constants";
 import { resetStatisticsTab, updateStatisticsTab } from "./tabs";
+import { requestCharacterReplace } from "./requests";
+import { requestCharacterScan } from "./requests";
+import { ScanResponse } from "../types/types";
+
+type ButtonState = "scan" | "eliminate" | "clear";
 
 export const disableButton = () => {
-  let button = document.getElementById(buttonId);
+  const button = document.getElementById(buttonId);
   if (button) {
     button.setAttribute("disabled", "true");
     button.style.opacity = "0.5";
@@ -14,7 +17,7 @@ export const disableButton = () => {
 };
 
 export const enableButton = () => {
-  let button = document.getElementById(buttonId);
+  const button = document.getElementById(buttonId);
   if (button) {
     button.removeAttribute("disabled");
     button.style.opacity = "1";
@@ -23,72 +26,93 @@ export const enableButton = () => {
   }
 };
 
-export interface ScanMessage {
-  action: "scan";
-  settings: RobocropSettings;
-}
+export const resetButton = () => {
+  const button = document.getElementById(buttonId) as HTMLButtonElement;
+  if (button) {
+    setButtonState(button, "scan");
+  }
+};
+
+export const setButtonState = (
+  button: HTMLButtonElement,
+  state: ButtonState
+) => {
+  // Clear all state classes
+  button.classList.remove("button-blue", "button-green", "button-red");
+
+  switch (state) {
+    case "scan":
+      button.classList.add("button-blue");
+      button.textContent = "Scan";
+      break;
+    case "eliminate":
+      button.classList.add("button-red");
+      button.textContent = "Eliminate";
+      break;
+    case "clear":
+      button.classList.add("button-green");
+      button.textContent = "Clear";
+      break;
+  }
+};
+
+const getCurrentButtonState = (button: HTMLButtonElement): ButtonState => {
+  console.dir("🔵 Popup: Button text:", button.textContent);
+  const text = button.textContent?.toLowerCase() || "";
+
+  if (text.includes("eliminate")) return "eliminate";
+  if (text.includes("clear")) return "clear";
+  if (text.includes("scan")) return "scan";
+  return "scan";
+};
+
+export const handleScanButtonClick = async (): Promise<void> => {
+  const button = document.getElementById(buttonId) as HTMLButtonElement;
+  const { results } = await requestCharacterScan();
+  console.dir("results in handleScanButtonClick:", results);
+  if (results.totalCount > 0) {
+    setButtonState(button, "eliminate");
+  } else {
+    setButtonState(button, "clear");
+  }
+  updateStatisticsTab(results);
+  return;
+};
+
+export const handleEliminateButtonClick = async (): Promise<void> => {
+  await requestCharacterReplace();
+};
 
 export const handleButtonClick = async (e: Event): Promise<void> => {
-  const target = e.target as HTMLElement;
-  console.log("🔵 Popup: Button clicked", target);
-  const id = target.id;
+  const button = e.target as HTMLButtonElement;
+  console.dir("🔵 Popup: Button clicked", button.textContent);
 
-  console.log("🔵 Popup: Button clicked", id);
-
-  // Reset statistics at the start of each scan
+  // Reset statistics at the start of each action
   resetStatisticsTab();
 
-  try {
-    const [activeTab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+  const currentState = getCurrentButtonState(button);
 
-    if (!activeTab?.id) {
-      throw new Error("No active tab found");
-    }
+  switch (currentState) {
+    case "scan":
+      await handleScanButtonClick();
+      break;
 
-    const settings = getSettings();
+    case "eliminate":
+      await handleEliminateButtonClick();
+      await handleScanButtonClick();
+      break;
 
-    const response: ScanResponse = await browser.tabs.sendMessage(
-      activeTab.id,
-      {
-        action: "scan",
-        settings: settings,
-      } as ScanMessage
-    );
+    case "clear":
+      await requestCharacterScan();
+      break;
 
-    console.log("response in handleButtonClick:", response);
-    console.log("response type:", typeof response);
-    console.log("response.received:", response?.received);
-    console.log("response.foundCount:", response?.foundCount);
-    console.dir("response.countData:", response?.countData);
-
-    if (!response?.received) {
-      throw new Error("Unknown error from content script");
-    }
-
-    // change the button text to show 'eliminate' if there are characters found
-    if (response.foundCount > 0) {
-      target.classList.remove("button-blue");
-      target.classList.add("button-red");
-      target.textContent = "Eliminate";
-    } else {
-      target.textContent = "Scan";
-      target.classList.remove("button-red");
-      target.classList.add("button-blue");
-    }
-
-    updateStatisticsTab(response.countData);
-  } catch (error) {
-    console.error("🔴 Popup: Failed to activate content script:", error);
-    throw error;
+    default:
+      console.warn("Unknown button state:", currentState);
+      break;
   }
 };
 
 export const configButtons = () => {
-  // Initialize statistics display
-
   const buttons = document.querySelectorAll<HTMLButtonElement>("button");
   buttons.forEach((button) => {
     button.addEventListener("click", handleButtonClick);
