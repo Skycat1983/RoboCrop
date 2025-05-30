@@ -33,8 +33,6 @@ This function updates the statistics tab with the results of the scan.
 */
 
 export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
-  console.dir("📊 Updating statistics display with results:", results);
-
   // Update individual category counts
   Object.entries(results.byCategory).forEach(([category, categoryData]) => {
     const statItem = document.querySelector(
@@ -60,8 +58,6 @@ export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
         statElement.classList.remove("stat-value-active");
         statElement.classList.add("stat-value-inactive");
       }
-    } else {
-      console.warn(`Could not find stat element for category: ${category}`);
     }
   });
 
@@ -89,8 +85,6 @@ export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
       totalElement.classList.remove("stat-value-active");
       totalElement.classList.add("stat-value-inactive");
     }
-  } else {
-    console.warn("Could not find total stat element");
   }
 };
 

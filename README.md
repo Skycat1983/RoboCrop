@@ -106,3 +106,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Credits
 
 Developed by [Skycat1983](https://github.com/Skycat1983)
+
+MIT License
+
+Copyright (c) 2025 Skycat1983
+
+Permission is hereby granted, free of charge, to any person obtaining a copy...
+
+# Privacy Policy
+
+RoboCrop does not collect, store, or transmit any personal data. All settings are stored locally on your device using Firefox's storage API. No data is sent to external servers.

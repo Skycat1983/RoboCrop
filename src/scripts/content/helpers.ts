@@ -13,16 +13,9 @@ export const shouldTrackCharacter = (
   char: string,
   settings: RobocropSettings
 ): boolean => {
-  console.log(`Helper: checking char "${char}" with settings:`, settings);
-
   const charData = charactersMap[char];
 
-  if (charData != undefined) {
-    console.log(`CharData found:`, charData);
-  }
-
   if (!charData) {
-    console.log(`No charData for "${char}"`);
     return false;
   }
 
@@ -41,7 +34,6 @@ export const shouldTrackCharacter = (
     // case "quotes":
     //   return settings.quotes;
     default:
-      console.log(`Unknown category: ${category}`);
       return false;
   }
 };

@@ -89,7 +89,6 @@ Therr was a time when this was used more than it is at present
 */
 
 const getCurrentButtonState = (button: HTMLButtonElement): ButtonState => {
-  console.dir("🔵 Popup: Button text:", button.textContent);
   const text = button.textContent?.toLowerCase() || "";
 
   if (text.includes("eliminate")) return "eliminate";
@@ -112,7 +111,6 @@ export const handleScanButtonClick = async (): Promise<void> => {
   const button = document.getElementById(buttonId) as HTMLButtonElement;
   const settings = getSettings();
   const { results } = await requestCharacterScan(settings);
-  console.dir("results in handleScanButtonClick:", results);
   if (results.totalCount > 0) {
     setButtonState(button, "eliminate");
   } else {
@@ -149,7 +147,6 @@ It also resets the statistics at the start of each action.
 
 export const handleButtonClick = async (e: Event): Promise<void> => {
   const button = e.target as HTMLButtonElement;
-  console.dir("🔵 Popup: Button clicked", button.textContent);
 
   // Reset statistics at the start of each action
   resetStatisticsTab();

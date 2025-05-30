@@ -5,6 +5,10 @@
 
   "description": "Strips away all the invisble characters added by AI",
   "homepage_url": "https://github.com/Skycat1983/firefox_extension",
+  "developer": {
+    "name": "Skycat1983",
+    "url": "https://github.com/Skycat1983"
+  },
 
   "icons": {
     "48": "icons/logo_48.png",

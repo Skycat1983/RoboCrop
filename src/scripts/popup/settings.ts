@@ -37,7 +37,6 @@ export const loadSettings = async () => {
   const savedSettings = result.robocropSettings as RobocropSettings;
 
   if (savedSettings) {
-    // console.dir("Loaded saved settings:", savedSettings);
     (document.getElementById("invisible") as HTMLInputElement).checked =
       savedSettings.invisible;
     (document.getElementById("selectors") as HTMLInputElement).checked =
@@ -47,7 +46,6 @@ export const loadSettings = async () => {
     (document.getElementById("dashes") as HTMLInputElement).checked =
       savedSettings.dashes;
   } else {
-    console.log("No saved settings found, using defaults");
     await browser.storage.local.set({ robocropSettings: defaultSettings });
   }
 };
