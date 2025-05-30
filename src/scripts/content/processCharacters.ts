@@ -62,7 +62,6 @@ export const replaceCharacters = (settings: RobocropSettings) => {
     }
   });
 
-  console.log(`🎯 Total replacements made: ${totalReplacements}`);
   return {
     success: true,
     replacements: totalReplacements,
@@ -80,17 +79,12 @@ It then removes the boundary spans.
 */
 
 export const restorePage = () => {
-  console.log("🧹 Starting cleanup...");
-
   // Find all boundary spans
   const boundarySpans = document.querySelectorAll(".robocrop-text-boundary");
 
   if (boundarySpans.length === 0) {
-    console.log("🔄 No boundary spans found, returning");
     return;
   }
-
-  console.log(`Found ${boundarySpans.length} boundary spans to restore`);
 
   boundarySpans.forEach((boundarySpan, index) => {
     const parent = boundarySpan.parentNode;

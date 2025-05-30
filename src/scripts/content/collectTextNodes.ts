@@ -10,8 +10,6 @@ We need to collect all text nodes to be able to wrap them in boundary-preserving
 */
 
 export const collectTextNodes = (): Text[] => {
-  console.log("📍 Collecting text nodes...");
-
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,
@@ -38,6 +36,5 @@ export const collectTextNodes = (): Text[] => {
     textNodes.push(textNode);
   }
 
-  console.log(`Found ${textNodes.length} text nodes`);
   return textNodes;
 };

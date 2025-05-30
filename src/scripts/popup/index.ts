@@ -15,7 +15,6 @@ It loads the settings, configures the tabs, checkboxes, tooltips, and buttons.
 */
 
 async function initializePopup() {
-  console.log("Initializing popup");
   try {
     await loadSettings();
     configTabs();

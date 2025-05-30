@@ -1,5 +1,13 @@
 import { ScanResponse } from "../types/types";
 
+// =============================================================================
+// HANDLE TAB SWITCH
+// =============================================================================
+
+/*
+This function handles the tab switch (between stats and settings tabs)
+*/
+
 const handleTabSwitch = (e: Event) => {
   const target = e.target as HTMLElement;
   if (!target.classList.contains("tab")) return;
@@ -15,6 +23,14 @@ const handleTabSwitch = (e: Event) => {
   const tabId = `${target.getAttribute("data-tab")}-tab`;
   document.getElementById(tabId)?.classList.add("active");
 };
+
+// =============================================================================
+// UPDATE STATISTICS TAB
+// =============================================================================
+
+/*
+This function updates the statistics tab with the results of the scan.
+*/
 
 export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
   console.dir("📊 Updating statistics display with results:", results);
@@ -44,10 +60,6 @@ export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
         statElement.classList.remove("stat-value-active");
         statElement.classList.add("stat-value-inactive");
       }
-
-      console.log(
-        `Updated ${category}: ${count} (${count > 0 ? "active" : "inactive"})`
-      );
     } else {
       console.warn(`Could not find stat element for category: ${category}`);
     }
@@ -77,18 +89,22 @@ export const updateStatisticsTab = (results: ScanResponse["results"]): void => {
       totalElement.classList.remove("stat-value-active");
       totalElement.classList.add("stat-value-inactive");
     }
-
-    console.log(
-      `Updated total: ${totalCount} (${totalCount > 0 ? "active" : "inactive"})`
-    );
   } else {
     console.warn("Could not find total stat element");
   }
 };
 
-export const resetStatisticsTab = (): void => {
-  console.log("📊 Resetting statistics display");
+// =============================================================================
+// RESET STATISTICS TAB
+// =============================================================================
 
+/*
+This function resets the statistics tab.
+
+It runs on each button click for simplicity.
+*/
+
+export const resetStatisticsTab = (): void => {
   // Reset all stat values to 0 and set inactive state
   const statItems = document.querySelectorAll(
     ".stat-item"
@@ -108,6 +124,14 @@ export const resetStatisticsTab = (): void => {
     element.classList.add("stat-value-inactive");
   });
 };
+
+// =============================================================================
+// CONFIGURE TABS
+// =============================================================================
+
+/*
+This function configures the tabs on page load.
+*/
 
 export const configTabs = () => {
   // setup for tab buttons

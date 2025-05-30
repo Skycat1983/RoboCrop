@@ -53,9 +53,7 @@ export const handleCheckboxChange = async (e: Event) => {
     } else {
       enableButton();
     }
-    console.log("🔵 Popup: Enabled settings:", enabledSettings);
     await browser.storage.local.set({ robocropSettings: updatedSettings });
-    console.dir(`Updated settings in storage:`, updatedSettings);
   } catch (error) {
     console.error(`Error saving checkbox state in handleChange: `, error);
   }

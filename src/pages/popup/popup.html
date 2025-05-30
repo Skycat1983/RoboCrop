@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="../../styles/popup.css" />
   </head>
   <body>
     <img
@@ -27,30 +27,30 @@
         <div class="stats-title">DETECTION STATISTICS</div>
         <div class="stats-group">
           <div class="stats-grid">
-            <div class="stat-item" data-category="hiddenControl">
-              <span>Illegal Control</span>
+            <div class="stat-item" data-category="invisible">
+              <span>Invisible</span>
               <span class="stat-value">0</span>
             </div>
-            <div class="stat-item" data-category="variationSelectors">
-              <span>Unauthorized Selectors</span>
+            <div class="stat-item" data-category="selectors">
+              <span>Selectors</span>
               <span class="stat-value">0</span>
             </div>
-            <div class="stat-item" data-category="unusualSpaces">
-              <span>Anomalous Spaces</span>
+            <div class="stat-item" data-category="spaces">
+              <span>Spaces</span>
               <span class="stat-value">0</span>
             </div>
-            <div class="stat-item" data-category="nonStandardDashes">
-              <span>Illegitimate Dashes</span>
+            <div class="stat-item" data-category="dashes">
+              <span>Dashes</span>
               <span class="stat-value">0</span>
             </div>
-            <div class="stat-item" data-category="smartQuotes">
-              <span>Prohibited Quotes</span>
+            <!-- <div class="stat-item" data-category="quotes">
+              <span>Quotes</span>
               <span class="stat-value">0</span>
             </div>
             <div class="stat-item" data-category="total">
               <span>Total</span>
               <span class="stat-value">0</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -63,35 +63,37 @@
         <div class="settings-group">
           <div class="checkbox-container">
             <div class="checkbox-item">
-              <input type="checkbox" id="illegalControl" checked />
-              <label for="illegalControl">Illegal Control</label>
+              <input type="checkbox" id="invisible" checked />
+              <label for="invisible">Invisible</label>
             </div>
             <div class="checkbox-item">
-              <input type="checkbox" id="unauthorizedSelectors" checked />
-              <label for="unauthorizedSelectors">Unauthorized Selectors</label>
+              <input type="checkbox" id="selectors" checked />
+              <label for="selectors">Selectors</label>
             </div>
             <div class="checkbox-item">
-              <input type="checkbox" id="anomalousSpaces" checked />
-              <label for="anomalousSpaces">Anomalous Spaces</label>
+              <input type="checkbox" id="spaces" checked />
+              <label for="spaces">Spaces</label>
             </div>
             <div class="checkbox-item">
-              <input type="checkbox" id="illegitimateDashes" checked />
-              <label for="illegitimateDashes">Illegitimate Dashes</label>
+              <input type="checkbox" id="dashes" checked />
+              <label for="dashes">Dashes</label>
             </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="prohibitedQuotes" checked />
-              <label for="prohibitedQuotes">Prohibited Quotes</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="enhancedVisuals" checked />
-              <label for="enhancedVisuals">Enhanced Visuals</label>
-            </div>
+            <!-- <div class="checkbox-item">
+              <input type="checkbox" id="quotes" checked />
+              <label for="quotes">Quotes</label>
+            </div> -->
+            <!-- <div class="checkbox-item">
+              <input type="checkbox" id="vfx" checked />
+              <label for="vfx">Enhanced Visuals</label>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
 
     <button id="my-button" class="button-blue">Scan</button>
+    <!-- <button id="my-button" class="button-white">Eliminate</button> -->
+
     <!-- <button id="replace-chars" class="button-white">Eliminate</button> -->
 
     <script src="/dist/scripts/popup.js"></script>

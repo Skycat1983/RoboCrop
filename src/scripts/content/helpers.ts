@@ -27,21 +27,16 @@ export const shouldTrackCharacter = (
   }
 
   const category = charData.category;
-  console.log(`Category: ${category}`);
 
   // Map categories to settings
   switch (category) {
     case "invisible":
-      console.log(`Invisible setting: ${settings.invisible}`);
       return settings.invisible;
     case "selectors":
-      console.log(`Selectors setting: ${settings.selectors}`);
       return settings.selectors;
     case "spaces":
-      console.log(`Spaces setting: ${settings.spaces}`);
       return settings.spaces;
     case "dashes":
-      console.log(`Dashes setting: ${settings.dashes}`);
       return settings.dashes;
     // case "quotes":
     //   return settings.quotes;

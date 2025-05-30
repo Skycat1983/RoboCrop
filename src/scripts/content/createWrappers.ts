@@ -14,8 +14,6 @@ By wrapping the text nodes in spans, we have an easily identifiable boundary to 
 The boundary spans enable us to add or remove highlighting without affecting the text content/boundaries.
 */
 export const wrapTextNodes = (textNodes: Text[]): HTMLSpanElement[] => {
-  console.log("📍 Wrapping text nodes in boundary spans...");
-
   const wrappedSpans: HTMLSpanElement[] = [];
 
   textNodes.forEach((textNode, index) => {
@@ -32,7 +30,6 @@ export const wrapTextNodes = (textNodes: Text[]): HTMLSpanElement[] => {
     wrappedSpans.push(boundarySpan);
   });
 
-  console.log(`✅ Wrapped ${wrappedSpans.length} text nodes`);
   return wrappedSpans;
 };
 
@@ -54,10 +51,6 @@ export const wrapChars = (
   boundarySpans: HTMLSpanElement[],
   settings: RobocropSettings
 ) => {
-  console.log(
-    "🎯 Phase 2: Highlighting target characters within boundary spans..."
-  );
-
   let totalHighlighted = 0;
 
   boundarySpans.forEach((boundarySpan) => {
@@ -154,6 +147,4 @@ export const wrapChars = (
       });
     }
   });
-
-  console.log(`✅ Highlighted ${totalHighlighted} target characters`);
 };

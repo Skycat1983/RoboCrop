@@ -28,13 +28,10 @@ restorePage is also added to the window click event listener because... it just 
 */
 
 function initializeContentScript() {
-  console.log("🎯 Content script initializing on:", window.location.href);
-
   injectCSS();
 
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { action, settings } = message;
-    console.log("📩 Content script received message:", message);
 
     restorePage();
     removeCRTEffect();
@@ -73,6 +70,5 @@ function initializeContentScript() {
 initializeContentScript();
 
 window.addEventListener("click", () => {
-  console.log("🔄 Window clicked, cleaning up highlighting...");
   restorePage();
 });

@@ -14,8 +14,6 @@ these values are sent back to the popup to be displayed to the user in the stats
 */
 
 export const collectResults = (): ScanResults => {
-  console.log("📊 Collecting highlight results from page...");
-
   const targetSpans = document.querySelectorAll(".robocrop-character");
 
   const results = {
@@ -48,6 +46,5 @@ export const collectResults = (): ScanResults => {
     }
   });
 
-  console.log(`📈 Results collected: ${results.totalCount} total characters`);
   return results satisfies ScanResults;
 };

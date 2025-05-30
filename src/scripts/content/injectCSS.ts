@@ -12,7 +12,6 @@ export const injectCSS = () => {
   try {
     // Check if CSS is already injected to avoid duplicates
     if (document.getElementById("robocrop-styles")) {
-      console.log("🎨 CSS already injected, skipping");
       return;
     }
 
@@ -23,7 +22,6 @@ export const injectCSS = () => {
     link.href = browser.runtime.getURL("src/styles/content.css");
 
     document.head.appendChild(link);
-    console.log("🎨 CSS injected successfully");
   } catch (error) {
     console.error("❌ Failed to inject CSS:", error);
   }

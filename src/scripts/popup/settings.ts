@@ -48,7 +48,6 @@ export const loadSettings = async () => {
     // checkboxes.quotes.checked = savedSettings.quotes;
     // checkboxes.vfx.checked = savedSettings.vfx;
   } else {
-    console.log("No saved settings found, using defaults");
     await browser.storage.local.set({ robocropSettings: defaultSettings });
   }
 };
