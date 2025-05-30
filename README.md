@@ -13,11 +13,10 @@ RoboCrop is a Firefox extension designed to detect and eliminate invisible or sp
 - **Character Information**: Provides detailed information about each detected character via tooltips
 - **One-Click Elimination**: Replaces problematic characters with appropriate alternatives
 - **Customizable Filters**: Configure which types of characters to detect:
-  - Hidden/Control characters
-  - Variation selectors
-  - Special spaces
-  - Fancy dashes
-  - Smart quotes
+  - **Hidden/Control Characters**: Zero-width spaces, joiners, and other invisible formatting characters
+  - **Variation Selectors**: Unicode characters that modify the appearance of preceding characters
+  - **Special Spaces**: Non-standard space characters like non-breaking spaces, hair spaces, etc.
+  - **Fancy Dashes**: Em dashes, en dashes, and other dash variants
 
 ## How It Works
 
@@ -40,13 +39,36 @@ RoboCrop is a Firefox extension designed to detect and eliminate invisible or sp
 5. Review the highlighted characters (hover over highlights to see character details)
 6. Click "Eliminate" to replace all highlighted characters
 
-## Character Types Detected
+## Permissions
 
-- **Hidden/Control Characters**: Zero-width spaces, joiners, and other invisible formatting characters
-- **Variation Selectors**: Unicode characters that modify the appearance of preceding characters
-- **Special Spaces**: Non-standard space characters like non-breaking spaces, hair spaces, etc.
-- **Fancy Dashes**: Em dashes, en dashes, and other dash variants
-- **Smart Quotes**: Curly quotes and other quote variants
+RoboCrop requires the following permissions to function properly:
+
+- **`activeTab`**: Allows the extension to access and modify content on the currently active tab when you click the extension icon. This is essential for scanning and highlighting characters on the page you're viewing.
+
+- **`tabs`**: Enables the extension to interact with browser tabs and detect when you navigate to different pages. This allows RoboCrop to maintain state across different websites and provide consistent functionality.
+
+- **`storage`**: Permits the extension to save your preferences (which character types to detect) locally in your browser. Your settings are stored only on your device and are never transmitted elsewhere.
+
+These permissions follow the principle of least privilege - RoboCrop only requests access to what it absolutely needs to provide its core functionality of detecting and eliminating problematic characters.
+
+## Planned Features
+
+- **Advanced Settings**: Granular control over individual character detection and replacement rules. Users will be able to specify custom replacement characters for each type of problematic character detected.
+
+- **Visual Effects Toggle**: Option to enable/disable the CRT-style visual effects and crosshair highlighting for users who prefer minimal visual feedback.
+
+- **Background Monitoring**: Implementation of background script functionality to automatically watch for new page loads and scan content without user intervention. This will include:
+
+  - Automatic scanning of newly loaded pages
+  - Visual feedback via the toolbar icon when problematic characters are detected
+  - Optional auto-replacement of detected characters
+  - Character count badges on the extension icon
+
+- **Staggered Targeting**: Enhanced visual effects with staggered highlighting animations for a more engaging user experience when multiple characters are detected.
+
+## Known Issues
+
+- **Effect Persistence**: Clicking outside the popup when visual effects are active will remove the highlighting effects. This is intended behavior, but can be inadvertently bypassed by right-clicking first instead of left-clicking, which may cause the effects to persist unexpectedly.
 
 ## Development
 

@@ -2,8 +2,6 @@ import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 
-console.log("🔥 Content script is being evaluated");
-
 export default [
   // Content Script Bundle
   {
