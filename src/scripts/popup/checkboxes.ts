@@ -3,25 +3,6 @@ import { RobocropSettings } from "../types/types";
 import { defaultSettings } from "../constants/constants";
 
 // =============================================================================
-// GET CHECKBOXES
-// =============================================================================
-
-/*
-This function gets the checkboxes from the page.
-*/
-
-export const getCheckboxes = () => {
-  return {
-    invisible: document.getElementById("invisible") as HTMLInputElement,
-    selectors: document.getElementById("selectors") as HTMLInputElement,
-    spaces: document.getElementById("spaces") as HTMLInputElement,
-    dashes: document.getElementById("dashes") as HTMLInputElement,
-    // quotes: document.getElementById("quotes") as HTMLInputElement,
-    // vfx: document.getElementById("vfx") as HTMLInputElement,
-  };
-};
-
-// =============================================================================
 // HANDLE CHECKBOX CHANGE
 // =============================================================================
 

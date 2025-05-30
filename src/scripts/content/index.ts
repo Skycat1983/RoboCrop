@@ -70,5 +70,6 @@ function initializeContentScript() {
 initializeContentScript();
 
 window.addEventListener("click", () => {
+  removeCRTEffect();
   restorePage();
 });
