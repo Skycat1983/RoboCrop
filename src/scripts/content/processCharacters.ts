@@ -5,22 +5,38 @@ import { collectTextNodes } from "./collectTextNodes";
 import { wrapChars, wrapTextNodes } from "./createWrappers";
 import { shouldTrackCharacter } from "./helpers";
 
+// =============================================================================
+// FIND CHARACTERS
+// =============================================================================
+
+/*
+This function acts as controller for the process.
+
+It collects the text nodes, wraps them in boundary-preserving spans, and highlights the characters based on the settings provided.
+
+It then collects the results and returns them.
+*/
+
 export const findCharacters = (settings: RobocropSettings) => {
   const textNodes: Text[] = collectTextNodes();
-  console.dir("textNodes", textNodes);
   const spans: HTMLSpanElement[] = wrapTextNodes(textNodes);
   wrapChars(spans, settings);
-  console.dir("spans", spans);
 
   const results: ScanResults = collectResults();
-  console.log("📈 Final scan results:", results);
 
   return results;
 };
 
+// =============================================================================
+// REPLACE CHARACTERS
+// =============================================================================
+
+/*
+This function replaces the characters based on the settings provided.
+*/
+
 export const replaceCharacters = (settings: RobocropSettings) => {
   const textNodes = collectTextNodes();
-  console.log(`🔍 Found ${textNodes.length} text nodes to process`);
 
   let totalReplacements = 0;
   textNodes.forEach((textNode, nodeIndex) => {
@@ -30,13 +46,10 @@ export const replaceCharacters = (settings: RobocropSettings) => {
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
 
-      if (shouldTrackCharacter(char, settings)) {
+      const isTracked = shouldTrackCharacter(char, settings);
+
+      if (isTracked) {
         const charData = charactersMap[char];
-        console.log(
-          `🔄 Found char "${char}" (${char.charCodeAt(0)}) -> replacing with "${
-            charData.replacement
-          }"`
-        );
         newText += charData.replacement;
         totalReplacements++;
       } else {
@@ -45,10 +58,7 @@ export const replaceCharacters = (settings: RobocropSettings) => {
     }
 
     if (newText !== text) {
-      console.log(`📝 Node ${nodeIndex}: BEFORE: "${text}"`);
-      console.log(`📝 Node ${nodeIndex}: AFTER:  "${newText}"`);
       textNode.textContent = newText;
-      console.log(`📝 Node ${nodeIndex}: ACTUAL: "${textNode.textContent}"`);
     }
   });
 
@@ -58,6 +68,16 @@ export const replaceCharacters = (settings: RobocropSettings) => {
     replacements: totalReplacements,
   };
 };
+
+// =============================================================================
+// RESTORE PAGE
+// =============================================================================
+
+/*
+This function restores the page to its original state using the boundary spans, and the original-text attribute.
+
+It then removes the boundary spans.
+*/
 
 export const restorePage = () => {
   console.log("🧹 Starting cleanup...");
@@ -78,8 +98,6 @@ export const restorePage = () => {
 
     // Get the original text from the data attribute
     const originalText = boundarySpan.getAttribute("data-original-text") || "";
-
-    console.log("originalText", originalText);
 
     // Create a new text node with the original content
     const textNode = document.createTextNode(originalText);

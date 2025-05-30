@@ -1,6 +1,18 @@
 import { charactersMap } from "../constants/constants";
 import { ScanResults } from "../types/types";
 
+// =============================================================================
+// COLLECT RESULTS
+// =============================================================================
+
+/*
+This function collects the results of the highlighting process.
+
+It collects the total number of characters highlighted, and the number of characters highlighted by category.
+
+these values are sent back to the popup to be displayed to the user in the stats tab
+*/
+
 export const collectResults = (): ScanResults => {
   console.log("📊 Collecting highlight results from page...");
 

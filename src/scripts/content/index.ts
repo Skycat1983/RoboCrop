@@ -1,114 +1,78 @@
-import { CountData, scanPage } from "./scanPage";
-import { highlightCharacters, removeHighlighting } from "./highlightCharacters";
-import { addCRTEffect, removeAllEffects } from "./vfx";
-import { ScanMessage } from "../popup/buttons";
+import {
+  findCharacters,
+  replaceCharacters,
+  restorePage,
+} from "./processCharacters";
+import { ReplaceResponse, ScanResponse } from "../types/types";
+import { addCRTEffect, removeCRTEffect } from "./visualEffects";
+import { injectCSS } from "./injectCSS";
 
-export interface ScanResponse {
-  received: boolean;
-  status: string;
-  countData: CountData;
-  foundCount: number;
-}
+// =============================================================================
+// INITIALIZE CONTENT SCRIPT
+// =============================================================================
 
-const getSettings = async () => {
-  const { robocropSettings } = await browser.storage.local.get(
-    "robocropSettings"
-  );
-  return robocropSettings;
-};
+/*
+This function initializes the content script.
 
-console.log("🔥 Content script starting to load");
+It also injects the CSS into the page.
 
-// Announce that content script is ready
-browser.runtime
-  .sendMessage({ action: "contentScriptReady" })
-  .then(() => console.log("✅ Content script announced itself"))
-  .catch((error) =>
-    console.log("❌ Failed to announce content script:", error)
-  );
+It also listens for messages from the popup.
+
+When a message is received from the popup, it will call the appropriate function to handle the request.
+
+It also restores the page to its original state when the window is clicked, which trades off efficiency (because we have to loop through all the nodes again) to avoid complexity (I added so many spans/attributes and classnames when 'finding' the characters that deconstructing and reassumebling select parts of the html just seemed to be more hassle than it was worth.
+
+It also adds/removes the CRT effect to the page
+
+restorePage is also added to the window click event listener because... it just felt weird when the CSS persisted after closing the popup.
+*/
 
 function initializeContentScript() {
   console.log("🎯 Content script initializing on:", window.location.href);
 
+  injectCSS();
+
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const { action, settings } = message;
     console.log("📩 Content script received message:", message);
 
-    // Handle async operations properly
-    const handleMessage = async () => {
-      try {
-        if (message.action === "scan") {
-          console.log("🔍 Starting page scan");
-          const { settings } = message as ScanMessage;
-          const { enhancedVisuals } = settings;
-          console.log("settings in content script", settings);
+    restorePage();
+    removeCRTEffect();
 
-          // Phase 1: Scan for characters
-          const scanResults = await scanPage(settings);
-          console.log("scan results in content script", scanResults);
+    if (action === "findCharacters") {
+      const results = findCharacters(settings);
 
-          // Phase 2: Apply highlighting if characters were found
-          if (scanResults.foundCharacters.length > 0) {
-            const highlightResults = await highlightCharacters(scanResults);
-            console.log(
-              "highlight results in content script",
-              highlightResults
-            );
-          }
-
-          // Phase 3: Apply enhanced visuals if enabled
-          if (enhancedVisuals) {
-            addCRTEffect();
-          }
-
-          const response: ScanResponse = {
-            received: true,
-            status: "scan completed",
-            countData: scanResults.countData,
-            foundCount: scanResults.foundCharacters.length,
-          };
-
-          sendResponse(response);
-          return;
-        }
-
-        if (message.action === "cleanup") {
-          console.log("🧹 Received cleanup message from popup");
-          try {
-            // Remove highlighting
-            removeHighlighting();
-
-            // Remove CRT effects
-            removeAllEffects();
-
-            sendResponse({ received: true, status: "cleanup completed" });
-          } catch (error) {
-            console.error("❌ Error during cleanup:", error);
-            sendResponse({
-              received: false,
-              error: error instanceof Error ? error.message : String(error),
-            });
-          }
-          return;
-        }
-      } catch (error: unknown) {
-        console.error("❌ Error handling message:", error);
-        sendResponse({
-          received: false,
-          error: error instanceof Error ? error.message : String(error),
-        });
+      const response: ScanResponse = {
+        success: true,
+        results: results,
+      };
+      if (results.totalCount > 0) {
+        addCRTEffect();
       }
-    };
 
-    // Execute async handler
-    handleMessage();
+      sendResponse(response);
+      return;
+    }
 
-    // Return true to indicate we will send a response asynchronously
+    if (action === "replaceCharacters") {
+      const results = replaceCharacters(settings);
+
+      const response: ReplaceResponse = {
+        success: true,
+        replacements: results.replacements,
+      };
+
+      sendResponse(response);
+      return true;
+    }
+
     return true;
   });
 }
 
-// Initialize once when the script loads
 initializeContentScript();
 
-// Log that we reached the end of the script
-console.log("🔥 Content script evaluation complete");
+window.addEventListener("click", () => {
+  console.log("🔄 Window clicked, cleaning up highlighting...");
+  restorePage();
+});

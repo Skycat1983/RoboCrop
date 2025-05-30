@@ -1,10 +1,10 @@
-// =============================================================================
-// WRAP NODES IN SPANS
-// =============================================================================
-
 import { charactersMap } from "../constants/constants";
 import { RobocropSettings } from "../types/types";
 import { shouldTrackCharacter } from "./helpers";
+
+// =============================================================================
+// WRAP TEXT NODES
+// =============================================================================
 
 /*
 This function wraps the provided text nodes in boundary-preserving spans.
@@ -46,6 +46,8 @@ This function receives the boundary spans and wraps individual the characters in
 It also adds the necessary attributes to the spans to identify the characters and their replacements.
 
 It also adds the visual effects to the spans.
+
+NOTE: some attributes are likely no longer in use. They were added at a time when i thought I would 'replace' the characters using saud attributes as a way to identify the characters. Later i realised it would be quicker and less complicated just to restore the page and loop the nodes again from scratch
 */
 
 export const wrapChars = (
@@ -66,20 +68,16 @@ export const wrapChars = (
     let lastIndex = 0;
     let spanHighlighted = false;
 
-    // Check each character in this boundary span
+    // Check each character
     for (let i = 0; i < text.length; i++) {
-      // Get the character at the current index
+      // Get character at current index
       const char = text[i];
 
-      // Check if the character should be tracked
+      // Check if character should be tracked
       if (shouldTrackCharacter(char, settings)) {
-        console.log("🔍 Tracking character:", char);
-        // Get the character data from the charactersMap
+        // Get character data from charactersMap
         const charData = charactersMap[char];
 
-        // ? Q: what does this bit do?
-        // A: It adds the text before the current character to the fragments array.
-        // This is used to add the text before the current character to the fragments array.
         if (i > lastIndex) {
           fragments.push(text.substring(lastIndex, i));
         }
@@ -158,13 +156,4 @@ export const wrapChars = (
   });
 
   console.log(`✅ Highlighted ${totalHighlighted} target characters`);
-};
-
-export const unwrapTextNodes = (textNodes: Text[]): void => {
-  console.log("🔄 Unwrapping text nodes from boundary spans...");
-
-  textNodes.forEach((textNode) => {
-    const parent = textNode.parentNode;
-    if (!parent) return;
-  });
 };

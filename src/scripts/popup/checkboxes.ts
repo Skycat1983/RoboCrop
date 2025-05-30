@@ -1,28 +1,33 @@
 import { disableButton, enableButton } from "./buttons";
-import { RobocropSettings, defaultSettings } from "./constants";
+import { RobocropSettings } from "../types/types";
+import { defaultSettings } from "../constants/constants";
+
+// =============================================================================
+// GET CHECKBOXES
+// =============================================================================
+
+/*
+This function gets the checkboxes from the page.
+*/
 
 export const getCheckboxes = () => {
   return {
-    illegalControl: document.getElementById(
-      "illegalControl"
-    ) as HTMLInputElement,
-    unauthorizedSelectors: document.getElementById(
-      "unauthorizedSelectors"
-    ) as HTMLInputElement,
-    anomalousSpaces: document.getElementById(
-      "anomalousSpaces"
-    ) as HTMLInputElement,
-    illegitimateDashes: document.getElementById(
-      "illegitimateDashes"
-    ) as HTMLInputElement,
-    prohibitedQuotes: document.getElementById(
-      "prohibitedQuotes"
-    ) as HTMLInputElement,
-    enhancedVisuals: document.getElementById(
-      "enhancedVisuals"
-    ) as HTMLInputElement,
+    invisible: document.getElementById("invisible") as HTMLInputElement,
+    selectors: document.getElementById("selectors") as HTMLInputElement,
+    spaces: document.getElementById("spaces") as HTMLInputElement,
+    dashes: document.getElementById("dashes") as HTMLInputElement,
+    // quotes: document.getElementById("quotes") as HTMLInputElement,
+    // vfx: document.getElementById("vfx") as HTMLInputElement,
   };
 };
+
+// =============================================================================
+// HANDLE CHECKBOX CHANGE
+// =============================================================================
+
+/*
+This function handles the checkbox change.
+*/
 
 export const handleCheckboxChange = async (e: Event) => {
   const checkbox = e.target as HTMLInputElement;
@@ -55,6 +60,14 @@ export const handleCheckboxChange = async (e: Event) => {
     console.error(`Error saving checkbox state in handleChange: `, error);
   }
 };
+
+// =============================================================================
+// CONFIGURE CHECKBOXES
+// =============================================================================
+
+/*
+This function configures the checkboxes on page load.
+*/
 
 export const configureCheckboxes = () => {
   const checkboxes = document.querySelectorAll<HTMLInputElement>(

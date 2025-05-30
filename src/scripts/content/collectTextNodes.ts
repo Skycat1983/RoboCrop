@@ -5,9 +5,8 @@
 /*
 This function collects all text nodes in the document.
 
-We need to collect all text nodes to be able to wrap them in boundary-preserving spans.
+We need to collect all text nodes to be able to wrap them in boundary-preserving spans, which in turn enables us to add/remove highlighting, or restore the page more easily.
 
-This is important because we need to be able to add or remove highlighting without affecting the text content/boundaries.
 */
 
 export const collectTextNodes = (): Text[] => {

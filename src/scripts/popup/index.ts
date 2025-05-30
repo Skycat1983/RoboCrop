@@ -3,7 +3,16 @@ import { configButtons } from "./buttons";
 import { configureTooltips } from "./tooltips";
 import { configureCheckboxes } from "./checkboxes";
 import { configTabs } from "./tabs";
-console.log("Popup index script loaded");
+
+// =============================================================================
+// INITIALIZE POPUP
+// =============================================================================
+
+/*
+This function initializes the popup once the DOM has loaded.
+
+It loads the settings, configures the tabs, checkboxes, tooltips, and buttons.
+*/
 
 async function initializePopup() {
   console.log("Initializing popup");

@@ -2,9 +2,18 @@ import { buttonId } from "../constants/constants";
 import { resetStatisticsTab, updateStatisticsTab } from "./tabs";
 import { requestCharacterReplace } from "./requests";
 import { requestCharacterScan } from "./requests";
-import { ScanResponse } from "../types/types";
+import { ButtonState } from "../types/types";
+import { getSettings } from "./settings";
 
-type ButtonState = "scan" | "eliminate" | "clear";
+// =============================================================================
+// DISABLE BUTTON
+// =============================================================================
+
+/*
+This function disables the button.
+
+it is invoked when the user has disabled all the settings, leaving no characters to be highlighted.
+*/
 
 export const disableButton = () => {
   const button = document.getElementById(buttonId);
@@ -16,6 +25,16 @@ export const disableButton = () => {
   }
 };
 
+// =============================================================================
+// ENABLE BUTTON
+// =============================================================================
+
+/*
+This function enables the button.
+
+it is invoked when the user has enabled at least one setting, allowing characters to be highlighted.
+*/
+
 export const enableButton = () => {
   const button = document.getElementById(buttonId);
   if (button) {
@@ -26,12 +45,15 @@ export const enableButton = () => {
   }
 };
 
-export const resetButton = () => {
-  const button = document.getElementById(buttonId) as HTMLButtonElement;
-  if (button) {
-    setButtonState(button, "scan");
-  }
-};
+// =============================================================================
+// SET BUTTON STATE
+// =============================================================================
+
+/*
+This function sets the button state.
+
+It just makes it a bit easier to switch between the three varieties we use
+*/
 
 export const setButtonState = (
   button: HTMLButtonElement,
@@ -56,6 +78,16 @@ export const setButtonState = (
   }
 };
 
+// =============================================================================
+// GET CURRENT BUTTON STATE
+// =============================================================================
+
+/*
+This function gets the current button state.
+
+Therr was a time when this was used more than it is at present
+*/
+
 const getCurrentButtonState = (button: HTMLButtonElement): ButtonState => {
   console.dir("🔵 Popup: Button text:", button.textContent);
   const text = button.textContent?.toLowerCase() || "";
@@ -66,9 +98,20 @@ const getCurrentButtonState = (button: HTMLButtonElement): ButtonState => {
   return "scan";
 };
 
+// =============================================================================
+// HANDLE SCAN BUTTON CLICK
+// =============================================================================
+
+/*
+This function handles the scan button click.
+
+It requests the characters to be scanned, updates the button state to reflect the results of the scan, and also updates the statistics accordingly
+*/
+
 export const handleScanButtonClick = async (): Promise<void> => {
   const button = document.getElementById(buttonId) as HTMLButtonElement;
-  const { results } = await requestCharacterScan();
+  const settings = getSettings();
+  const { results } = await requestCharacterScan(settings);
   console.dir("results in handleScanButtonClick:", results);
   if (results.totalCount > 0) {
     setButtonState(button, "eliminate");
@@ -79,9 +122,30 @@ export const handleScanButtonClick = async (): Promise<void> => {
   return;
 };
 
+// =============================================================================
+// HANDLE ELIMINATE BUTTON CLICK
+// =============================================================================
+
+/*
+This function handles the eliminate button click.
+
+Pointless at present; a hangover from when i thought this would have more responsibility
+*/
+
 export const handleEliminateButtonClick = async (): Promise<void> => {
-  await requestCharacterReplace();
+  const settings = getSettings();
+  await requestCharacterReplace(settings);
 };
+
+// =============================================================================
+// HANDLE BUTTON CLICK
+// =============================================================================
+
+/*
+This function handles the button click, invoking the appropriate function based on the button state.
+
+It also resets the statistics at the start of each action.
+*/
 
 export const handleButtonClick = async (e: Event): Promise<void> => {
   const button = e.target as HTMLButtonElement;
@@ -103,7 +167,7 @@ export const handleButtonClick = async (e: Event): Promise<void> => {
       break;
 
     case "clear":
-      await requestCharacterScan();
+      await handleScanButtonClick();
       break;
 
     default:
@@ -111,6 +175,14 @@ export const handleButtonClick = async (e: Event): Promise<void> => {
       break;
   }
 };
+
+// =============================================================================
+// CONFIGURE BUTTONS
+// =============================================================================
+
+/*
+This function configures the buttons on page load
+*/
 
 export const configButtons = () => {
   const buttons = document.querySelectorAll<HTMLButtonElement>("button");

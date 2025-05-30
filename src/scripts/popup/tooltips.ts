@@ -1,6 +1,15 @@
-import { settingDescriptions } from "./constants";
+import { SettingId } from "../types/types";
+import { settingDescriptions } from "../constants/constants";
 
-type SettingId = keyof typeof settingDescriptions;
+// =============================================================================
+// CONFIGURE TOOLTIPS
+// =============================================================================
+
+/*
+This function configures the tooltips on page load.
+
+the tooltips are added to the checkboxes, and the labels, to help the user understand the settings.
+*/
 
 export const configureTooltips = () => {
   // Get all checkbox containers

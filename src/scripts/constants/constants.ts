@@ -27,15 +27,15 @@ export const settingDescriptions = {
   // vfx: "Toggles visual effects to highlight detected special characters in the text.",
 };
 
-// const invisibleReplacement = "";
-// const selectorReplacement = "";
-// const spaceReplacement = "";
-// const dashReplacement = "-";
+const invisibleReplacement = "";
+const selectorReplacement = "";
+const spaceReplacement = "";
+const dashReplacement = "-";
 
-const invisibleReplacement = "X";
-const selectorReplacement = "X";
-const spaceReplacement = "X";
-const dashReplacement = "X";
+// const invisibleReplacement = "X";
+// const selectorReplacement = "X";
+// const spaceReplacement = "X";
+// const dashReplacement = "X";
 
 // Unified character map with all characters organized by category
 export const charactersMap: CharMap = {
