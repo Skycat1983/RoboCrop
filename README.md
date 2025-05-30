@@ -1,7 +1,5 @@
 ![RoboCrop Logo](src/assets/images/roboCropLogo.png)
 
-<!-- ![RoboCrop Logo](icons/logo_96.png) -->
-
 ## Overview
 
 RoboCrop is a Firefox extension designed to detect and eliminate invisible or special characters often inserted by AI systems in text. These characters can cause formatting issues, affect copy-pasting, and get your text flagged by detection software. The extension scans web pages and highlights problematic characters, allowing users to eliminate them with a single click.
@@ -18,26 +16,29 @@ RoboCrop is a Firefox extension designed to detect and eliminate invisible or sp
   - **Special Spaces**: Non-standard space characters like non-breaking spaces, hair spaces, etc.
   - **Fancy Dashes**: Em dashes, en dashes, and other dash variants
 
-## How It Works
-
-1. **Scan**: Click the "Scan" button to detect special characters on the current page
-2. **Review**: Identified characters are highlighted with green crosshairs and labeled
-3. **Eliminate**: Click the "Eliminate" button to replace all highlighted characters with appropriate alternatives
-
 ## Installation
 
-1. Download the extension from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/robocrop/)
-2. Firefox will ask for confirmation to install the extension
-3. Once installed, the RoboCrop icon will appear in your browser toolbar
+1. Download and extract the extension files
+2. Navigate to `about:debugging` in Firefox
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on"
+5. Select the `manifest.json` file from the project directory
+6. The RoboCrop icon will appear in your browser toolbar
 
 ## Usage
 
-1. Navigate to a web page you suspect contains invisible characters
-2. Click the RoboCrop icon in your toolbar to open the extension popup
-3. Select which character types you want to detect (all are selected by default)
-4. Click "Scan" to detect characters on the page
-5. Review the highlighted characters (hover over highlights to see character details)
-6. Click "Eliminate" to replace all highlighted characters
+1. **Navigate to a web page** you suspect contains invisible characters
+2. **Configure settings**: Click the RoboCrop icon and select which character types to detect (all are selected by default)
+3. **Scan for characters**: Click the "Scan" button to detect special characters on the current page
+4. **Review detected characters**: Identified characters are highlighted with green crosshairs and labeled (hover over highlights to see character details)
+5. **Eliminate characters**: Click the "Eliminate" button to replace all highlighted characters with appropriate alternatives
+6. **Process complete**: The extension will show a clear state when no problematic characters remain
+
+### Screenshots
+
+<img src="src/assets/screenshots/settings.png" alt="Settings Configuration" width="400">
+<img src="src/assets/screenshots/eliminate.png" alt="Eliminate Mode" width="400">
+<img src="src/assets/screenshots/clear.png" alt="Clear State" width="400">
 
 ## Permissions
 
@@ -63,6 +64,7 @@ These permissions follow the principle of least privilege - RoboCrop only reques
   - Visual feedback via the toolbar icon when problematic characters are detected
   - Optional auto-replacement of detected characters
   - Character count badges on the extension icon
+  - Cumulative statistics tracking
 
 - **Staggered Targeting**: Enhanced visual effects with staggered highlighting animations for a more engaging user experience when multiple characters are detected.
 

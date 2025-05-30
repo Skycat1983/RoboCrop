@@ -1,1193 +1,878 @@
 (function () {
     'use strict';
 
+    const invisibleReplacement = "";
+    const selectorReplacement = "";
+    const spaceReplacement = "";
+    const dashReplacement = "-";
+    // const invisibleReplacement = "X";
+    // const selectorReplacement = "X";
+    // const spaceReplacement = "X";
+    // const dashReplacement = "X";
     // Unified character map with all characters organized by category
-    const allCharactersMap = {
+    const charactersMap = {
         // Hidden/Control Characters
         "\u00AD": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Soft Hyphen",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u180E": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Mongolian Vowel Separator",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u200B": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Zero-width Space",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u200C": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Zero-width Non-joiner",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u200D": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Zero-width Joiner",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u200E": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Left-to-Right Mark",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u200F": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Right-to-Left Mark",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u202A": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Left-to-Right Embedding",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u202B": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Right-to-Left Embedding",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u202C": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Pop Directional Formatting",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u202D": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Left-to-Right Override",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u202E": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Right-to-Left Override",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u2060": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Word Joiner",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u2061": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Function Application",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u2062": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Invisible Times",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u2063": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Invisible Separator",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u2064": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Invisible Plus",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206A": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Inhibit Symmetric Swapping",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206B": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Activate Symmetric Swapping",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206C": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Inhibit Arabic Form Shaping",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206D": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Activate Arabic Form Shaping",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206E": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "National Digit Shapes",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\u206F": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Nominal Digit Shapes",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         "\uFEFF": {
-            replacement: "",
+            replacement: invisibleReplacement,
             label: "Byte Order Mark",
-            category: "hiddenControl",
+            category: "invisible",
             count: 0,
         },
         // Variation Selectors
         "\uFE00": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-1",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE01": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-2",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE02": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-3",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE03": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-4",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE04": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-5",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE05": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-6",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE06": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-7",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE07": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-8",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE08": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-9",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE09": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-10",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0A": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-11",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0B": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-12",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0C": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-13",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0D": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-14",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0E": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-15",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         "\uFE0F": {
-            replacement: "",
+            replacement: selectorReplacement,
             label: "Variation Selector-16",
-            category: "variationSelectors",
+            category: "selectors",
             count: 0,
         },
         // Unusual Spaces
         "\u00A0": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Non-breaking Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u1680": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Ogham Space Mark",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2000": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "En Quad",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2001": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Em Quad",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2002": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "En Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2003": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Em Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2004": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Three-Per-Em Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2005": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Four-Per-Em Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2006": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Six-Per-Em Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2007": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Figure Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2008": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Punctuation Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u2009": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Thin Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u200A": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Hair Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u202F": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Narrow No-Break Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u205F": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Medium Mathematical Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         "\u3000": {
-            replacement: " ",
+            replacement: spaceReplacement,
             label: "Ideographic Space",
-            category: "unusualSpaces",
+            category: "spaces",
             count: 0,
         },
         // Non-standard Dashes
         "\u2012": {
-            replacement: "-",
+            replacement: dashReplacement,
             label: "Figure Dash",
-            category: "nonStandardDashes",
+            category: "dashes",
             count: 0,
         },
         "\u2013": {
-            replacement: "-",
+            replacement: dashReplacement,
             label: "En Dash",
-            category: "nonStandardDashes",
+            category: "dashes",
             count: 0,
         },
         "\u2014": {
-            replacement: "-",
+            replacement: dashReplacement,
             label: "Em Dash",
-            category: "nonStandardDashes",
+            category: "dashes",
             count: 0,
         },
         "\u2015": {
-            replacement: "-",
+            replacement: dashReplacement,
             label: "Horizontal Bar",
-            category: "nonStandardDashes",
+            category: "dashes",
             count: 0,
         },
         "\u2212": {
-            replacement: "-",
+            replacement: dashReplacement,
             label: "Minus Sign",
-            category: "nonStandardDashes",
-            count: 0,
-        },
-        // Smart Quotes
-        "\u2018": {
-            replacement: "'",
-            label: "Left Single Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2019": {
-            replacement: "'",
-            label: "Right Single Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201A": {
-            replacement: "'",
-            label: "Single Low-9 Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201B": {
-            replacement: "'",
-            label: "Single High-Reversed-9 Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201C": {
-            replacement: '"',
-            label: "Left Double Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201D": {
-            replacement: '"',
-            label: "Right Double Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201E": {
-            replacement: '"',
-            label: "Double Low-9 Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u201F": {
-            replacement: '"',
-            label: "Double High-Reversed-9 Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2032": {
-            replacement: "'",
-            label: "Prime",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2033": {
-            replacement: '"',
-            label: "Double Prime",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2034": {
-            replacement: "'''",
-            label: "Triple Prime",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2035": {
-            replacement: "'",
-            label: "Reversed Prime",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u2036": {
-            replacement: '"',
-            label: "Reversed Double Prime",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u00AB": {
-            replacement: '"',
-            label: "Left-Pointing Double Angle Quotation Mark",
-            category: "smartQuotes",
-            count: 0,
-        },
-        "\u00BB": {
-            replacement: '"',
-            label: "Right-Pointing Double Angle Quotation Mark",
-            category: "smartQuotes",
+            category: "dashes",
             count: 0,
         },
     };
-    const controlChars = Object.fromEntries(Object.entries(allCharactersMap).filter(([_, data]) => data.category === "hiddenControl"));
-    const selectorChars = Object.fromEntries(Object.entries(allCharactersMap).filter(([_, data]) => data.category === "variationSelectors"));
-    const spaceChars = Object.fromEntries(Object.entries(allCharactersMap).filter(([_, data]) => data.category === "unusualSpaces"));
-    const dashChars = Object.fromEntries(Object.entries(allCharactersMap).filter(([_, data]) => data.category === "nonStandardDashes"));
-    const quoteChars = Object.fromEntries(Object.entries(allCharactersMap).filter(([_, data]) => data.category === "smartQuotes"));
-
-    const isTrackedChar = (settings, char) => {
-        // Check each enabled setting and its corresponding character map
-        if (settings.illegalControl && controlChars[char])
-            return true;
-        if (settings.unauthorizedSelectors && selectorChars[char])
-            return true;
-        if (settings.anomalousSpaces && spaceChars[char])
-            return true;
-        if (settings.illegitimateDashes && dashChars[char])
-            return true;
-        if (settings.prohibitedQuotes && quoteChars[char])
-            return true;
-        return false;
-    };
-    const getCharacterData = (settings, char) => {
-        // Return the character data from whichever map contains this character
-        if (settings.illegalControl && controlChars[char])
-            return controlChars[char];
-        if (settings.unauthorizedSelectors && selectorChars[char])
-            return selectorChars[char];
-        if (settings.anomalousSpaces && spaceChars[char])
-            return spaceChars[char];
-        if (settings.illegitimateDashes && dashChars[char])
-            return dashChars[char];
-        if (settings.prohibitedQuotes && quoteChars[char])
-            return quoteChars[char];
-        return null;
-    };
+    //! Smart Quotes
+    //? removed for now
+    // "\u2018": {
+    //   replacement: "'",
+    //   label: "Left Single Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2019": {
+    //   replacement: "'",
+    //   label: "Right Single Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201A": {
+    //   replacement: "'",
+    //   label: "Single Low-9 Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201B": {
+    //   replacement: "'",
+    //   label: "Single High-Reversed-9 Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201C": {
+    //   replacement: '"',
+    //   label: "Left Double Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201D": {
+    //   replacement: '"',
+    //   label: "Right Double Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201E": {
+    //   replacement: '"',
+    //   label: "Double Low-9 Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u201F": {
+    //   replacement: '"',
+    //   label: "Double High-Reversed-9 Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2032": {
+    //   replacement: "'",
+    //   label: "Prime",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2033": {
+    //   replacement: '"',
+    //   label: "Double Prime",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2034": {
+    //   replacement: "'''",
+    //   label: "Triple Prime",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2035": {
+    //   replacement: "'",
+    //   label: "Reversed Prime",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u2036": {
+    //   replacement: '"',
+    //   label: "Reversed Double Prime",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u00AB": {
+    //   replacement: '"',
+    //   label: "Left-Pointing Double Angle Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // "\u00BB": {
+    //   replacement: '"',
+    //   label: "Right-Pointing Double Angle Quotation Mark",
+    //   category: "quotes",
+    //   count: 0,
+    // },
+    // };
 
     // =============================================================================
-    // PHASE 1: TEXT NODE COLLECTION
+    // COLLECT RESULTS
     // =============================================================================
-    // Helper function: Collect all processable text nodes from the document
-    const collectTextNodes = () => {
-        console.log("🔍 PHASE 1: Collecting text nodes...");
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-        const nodesToProcess = [];
-        let currentNode;
-        while ((currentNode = walker.nextNode())) {
-            const parentNode = currentNode.parentNode;
-            // Skip text nodes inside script, style, or noscript tags
-            if (parentNode &&
-                (parentNode.nodeName === "SCRIPT" ||
-                    parentNode.nodeName === "STYLE" ||
-                    parentNode.nodeName === "NOSCRIPT")) {
-                continue;
-            }
-            // Only process nodes that actually have text content
-            if (currentNode.textContent && currentNode.textContent.trim()) {
-                nodesToProcess.push(currentNode);
-            }
-        }
-        console.log(`✅ Found ${nodesToProcess.length} text nodes to process`);
-        return nodesToProcess;
-    };
-    // =============================================================================
-    // PHASE 2: CHARACTER DETECTION & ANALYSIS
-    // =============================================================================
-    // Helper function: Create a count data object initialized by category
-    const createCountObject = () => {
-        const countData = {
-            totalCount: 0,
+    /*
+    This function collects the results of the highlighting process.
+
+    It collects the total number of characters highlighted, and the number of characters highlighted by category.
+
+    these values are sent back to the popup to be displayed to the user in the stats tab
+    */
+    const collectResults = () => {
+        const targetSpans = document.querySelectorAll(".robocrop-character");
+        const results = {
+            totalCount: targetSpans.length,
             byCategory: {},
         };
         // Get unique categories from the unified map
         const categories = [
-            ...new Set(Object.values(allCharactersMap).map((data) => data.category)),
+            ...new Set(Object.values(charactersMap).map((data) => data.category)),
         ];
+        // Initialize categories
         categories.forEach((category) => {
-            countData.byCategory[category] = { count: 0, characters: {} };
-            // Initialize character counts for this category
-            Object.entries(allCharactersMap)
-                .filter(([_, data]) => data.category === category)
-                .forEach(([char, _]) => {
-                countData.byCategory[category].characters[char] = 0;
-            });
+            results.byCategory[category] = { count: 0, characters: {} };
         });
-        return countData;
-    };
-    // Helper function: Increment character count with category tracking
-    const incrementCharCount = (countData, char, category) => {
-        countData.totalCount++;
-        if (countData.byCategory[category]) {
-            countData.byCategory[category].count++;
-            countData.byCategory[category].characters[char]++;
-        }
-    };
-    // Main detection function: Analyze text nodes and find target characters
-    const detectCharacters = async (settings, textNodes) => {
-        console.log("🔍 PHASE 2: Detecting characters...");
-        console.log("🔧 DEBUG: Settings received:", settings);
-        const countData = createCountObject();
-        const foundCharacters = [];
-        textNodes.forEach((textNode, nodeIndex) => {
-            const text = textNode.textContent || "";
-            // Scan through each character in the text
-            for (let charIndex = 0; charIndex < text.length; charIndex++) {
-                const char = text[charIndex];
-                // Debug: Log some characters we're checking
-                if (nodeIndex < 3 && charIndex < 10) {
-                    console.log(`🔧 DEBUG: Checking char "${char}" (${char.charCodeAt(0)}) in node ${nodeIndex}`);
-                }
-                // Check if this character matches any enabled detection rules
-                if (isTrackedChar(settings, char)) {
-                    console.log(`🎯 DEBUG: Found tracked character "${char}" (${char.charCodeAt(0)}) at position ${charIndex}`);
-                    const charData = getCharacterData(settings, char);
-                    if (charData && allCharactersMap[char]) {
-                        const category = allCharactersMap[char].category;
-                        foundCharacters.push({
-                            char,
-                            charCode: char.charCodeAt(0),
-                            hexCode: `U+${char.charCodeAt(0).toString(16).padStart(4, "0")}`,
-                            label: charData.label,
-                            replacement: charData.replacement,
-                            category: category,
-                            textNode: textNode,
-                            position: charIndex,
-                        });
-                        // Update count data
-                        incrementCharCount(countData, char, category);
-                    }
-                }
+        // Collect data from existing spans
+        targetSpans.forEach((span) => {
+            const category = span.getAttribute("data-category") || "";
+            const char = span.getAttribute("data-character") || "";
+            if (results.byCategory[category]) {
+                results.byCategory[category].count++;
+                results.byCategory[category].characters[char] =
+                    (results.byCategory[category].characters[char] || 0) + 1;
             }
         });
-        console.log(`✅ Detection complete: ${foundCharacters.length} characters found`);
-        console.log("🔧 DEBUG: Found characters:", foundCharacters);
-        return {
-            countData,
-            foundCharacters,
-            textNodes,
-        };
+        return results;
+    };
+
+    // =============================================================================
+    // COLLECT TEXT NODES
+    // =============================================================================
+    /*
+    This function collects all text nodes in the document.
+
+    We need to collect all text nodes to be able to wrap them in boundary-preserving spans, which in turn enables us to add/remove highlighting, or restore the page more easily.
+
+    */
+    const collectTextNodes = () => {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+        const textNodes = [];
+        let currentNode;
+        while ((currentNode = walker.nextNode())) {
+            const textNode = currentNode;
+            const parent = textNode.parentNode;
+            // Skip script, style, noscript tags
+            if (parent && ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.nodeName)) {
+                continue;
+            }
+            // Skip empty text nodes
+            if (!textNode.textContent?.trim()) {
+                continue;
+            }
+            textNodes.push(textNode);
+        }
+        return textNodes;
+    };
+
+    // =============================================================================
+    // SHOULD TRACK CHARACTER
+    // =============================================================================
+    /*
+    This function checks if a character should be tracked based on the settings provided.
+    */
+    const shouldTrackCharacter = (char, settings) => {
+        console.log(`Helper: checking char "${char}" with settings:`, settings);
+        const charData = charactersMap[char];
+        if (charData != undefined) {
+            console.log(`CharData found:`, charData);
+        }
+        if (!charData) {
+            console.log(`No charData for "${char}"`);
+            return false;
+        }
+        const category = charData.category;
+        // Map categories to settings
+        switch (category) {
+            case "invisible":
+                return settings.invisible;
+            case "selectors":
+                return settings.selectors;
+            case "spaces":
+                return settings.spaces;
+            case "dashes":
+                return settings.dashes;
+            // case "quotes":
+            //   return settings.quotes;
+            default:
+                console.log(`Unknown category: ${category}`);
+                return false;
+        }
+    };
+
+    // =============================================================================
+    // WRAP TEXT NODES
+    // =============================================================================
+    /*
+    This function wraps the provided text nodes in boundary-preserving spans.
+
+    By wrapping the text nodes in spans, we have an easily identifiable boundary to work with.
+
+    The boundary spans enable us to add or remove highlighting without affecting the text content/boundaries.
+    */
+    const wrapTextNodes = (textNodes) => {
+        const wrappedSpans = [];
+        textNodes.forEach((textNode, index) => {
+            const parent = textNode.parentNode;
+            if (!parent)
+                return;
+            const boundarySpan = document.createElement("span");
+            boundarySpan.className = "robocrop-text-boundary";
+            boundarySpan.setAttribute("data-boundary-id", index.toString());
+            boundarySpan.setAttribute("data-original-text", textNode.textContent || "");
+            boundarySpan.textContent = textNode.textContent;
+            parent.replaceChild(boundarySpan, textNode);
+            wrappedSpans.push(boundarySpan);
+        });
+        return wrappedSpans;
     };
     // =============================================================================
-    // PHASE 3: RESULTS REPORTING
+    // WRAP CHARS IN SPANS
     // =============================================================================
-    // Helper function: Log organized results breakdown
-    const logScanResults = (scanResults) => {
-        console.log("=== FINAL SCAN RESULTS ===");
-        console.log(`Total characters found: ${scanResults.countData.totalCount}`);
-        Object.entries(scanResults.countData.byCategory).forEach(([categoryName, categoryData]) => {
-            if (categoryData.count > 0) {
-                console.log(`\n${categoryName}: ${categoryData.count} characters`);
-                Object.entries(categoryData.characters).forEach(([char, count]) => {
-                    if (count > 0) {
-                        const hexCode = `U+${char
-                        .charCodeAt(0)
-                        .toString(16)
-                        .padStart(4, "0")}`;
-                        const charData = allCharactersMap[char];
-                        console.log(`  ${hexCode} (${charData?.label || "Unknown"}): ${count}`);
+    /*
+    This function receives the boundary spans and wraps individual the characters in spans, accoding to the settings provided.
+
+    It also adds the necessary attributes to the spans to identify the characters and their replacements.
+
+    It also adds the visual effects to the spans.
+
+    NOTE: some attributes are likely no longer in use. They were added at a time when i thought I would 'replace' the characters using saud attributes as a way to identify the characters. Later i realised it would be quicker and less complicated just to restore the page and loop the nodes again from scratch
+    */
+    const wrapChars = (boundarySpans, settings) => {
+        boundarySpans.forEach((boundarySpan) => {
+            const text = boundarySpan.textContent || "";
+            if (!text)
+                return;
+            const fragments = [];
+            let lastIndex = 0;
+            let spanHighlighted = false;
+            // Check each character
+            for (let i = 0; i < text.length; i++) {
+                // Get character at current index
+                const char = text[i];
+                // Check if character should be tracked
+                if (shouldTrackCharacter(char, settings)) {
+                    // Get character data from charactersMap
+                    const charData = charactersMap[char];
+                    if (i > lastIndex) {
+                        fragments.push(text.substring(lastIndex, i));
+                    }
+                    // Create container for character span and crosshairs
+                    const charContainer = document.createElement("span");
+                    // Base classes for identification and counting
+                    charContainer.className = "robocrop-character";
+                    charContainer.classList.add("robocrop-styles");
+                    // Add the category as an attribute to the target span
+                    charContainer.setAttribute("data-category", charData.category);
+                    // Add the character as an attribute to the target span
+                    charContainer.setAttribute("data-character", char);
+                    // Add the replacement character as an attribute to the target span
+                    charContainer.setAttribute("data-replacement", charData.replacement);
+                    // Add the character code as an attribute to the target span
+                    //? charCodeAt(0) gets the Unicode code point of the first character. toString(16) converts the code point to a hexadecimal string
+                    charContainer.setAttribute("data-char-code", char.charCodeAt(0).toString(16));
+                    // Add the label as an attribute to the target span
+                    charContainer.setAttribute("data-label", charData.label);
+                    // Add the label as a title to the target span
+                    //? do we benefit from this AND data-label?
+                    charContainer.title = charData.label;
+                    // Create horizontal crosshair line
+                    const horizontalLine = document.createElement("div");
+                    horizontalLine.className = "crosshair-horizontal";
+                    charContainer.appendChild(horizontalLine);
+                    // Create vertical crosshair line
+                    const verticalLine = document.createElement("div");
+                    verticalLine.className = "crosshair-vertical";
+                    charContainer.appendChild(verticalLine);
+                    // Create text wrapper for the character
+                    const textWrapper = document.createElement("span");
+                    textWrapper.className = "text-wrapper";
+                    textWrapper.textContent = char;
+                    charContainer.appendChild(textWrapper);
+                    fragments.push(charContainer);
+                    lastIndex = i + 1;
+                    spanHighlighted = true;
+                }
+            }
+            // Only process this span if we found target characters
+            if (spanHighlighted) {
+                // Add remaining text
+                if (lastIndex < text.length) {
+                    fragments.push(text.substring(lastIndex));
+                }
+                // Clear the boundary span and add our fragment (prevents dupes)
+                boundarySpan.innerHTML = "";
+                fragments.forEach((fragment) => {
+                    if (typeof fragment === "string") {
+                        boundarySpan.appendChild(document.createTextNode(fragment));
+                    }
+                    else {
+                        boundarySpan.appendChild(fragment);
                     }
                 });
             }
         });
     };
+
     // =============================================================================
-    // MAIN ORCHESTRATOR FUNCTION
+    // FIND CHARACTERS
     // =============================================================================
-    // Main function: Orchestrate the complete scan process
-    const scanPage = async (settings) => {
-        console.log("🚀 Starting page scan...");
-        // Phase 1: Collect text nodes
+    /*
+    This function acts as controller for the process.
+
+    It collects the text nodes, wraps them in boundary-preserving spans, and highlights the characters based on the settings provided.
+
+    It then collects the results and returns them.
+    */
+    const findCharacters = (settings) => {
         const textNodes = collectTextNodes();
-        // Phase 2: Detect and analyze characters
-        const scanResults = await detectCharacters(settings, textNodes);
-        // Phase 3: Log results
-        logScanResults(scanResults);
-        console.log("✅ Page scan complete!");
-        return scanResults;
+        const spans = wrapTextNodes(textNodes);
+        wrapChars(spans, settings);
+        const results = collectResults();
+        return results;
     };
+    // =============================================================================
+    // REPLACE CHARACTERS
+    // =============================================================================
+    /*
+    This function replaces the characters based on the settings provided.
+    */
+    const replaceCharacters = (settings) => {
+        const textNodes = collectTextNodes();
+        let totalReplacements = 0;
+        textNodes.forEach((textNode, nodeIndex) => {
+            const text = textNode.textContent || "";
+            let newText = "";
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const isTracked = shouldTrackCharacter(char, settings);
+                if (isTracked) {
+                    const charData = charactersMap[char];
+                    newText += charData.replacement;
+                    totalReplacements++;
+                }
+                else {
+                    newText += char;
+                }
+            }
+            if (newText !== text) {
+                textNode.textContent = newText;
+            }
+        });
+        return {
+            success: true,
+            replacements: totalReplacements,
+        };
+    };
+    // =============================================================================
+    // RESTORE PAGE
+    // =============================================================================
+    /*
+    This function restores the page to its original state using the boundary spans, and the original-text attribute.
 
-    // =============================================================================
-    // PHASE 2: CHARACTER HIGHLIGHTING & VISUALIZATION
-    // =============================================================================
-    // Helper function: Inject CSS styles into the document
-    const injectHighlightingStyles = () => {
-        // Check if styles are already injected
-        if (document.getElementById("robocrop-highlighting-styles")) {
+    It then removes the boundary spans.
+    */
+    const restorePage = () => {
+        // Find all boundary spans
+        const boundarySpans = document.querySelectorAll(".robocrop-text-boundary");
+        if (boundarySpans.length === 0) {
             return;
         }
-        // Create style element with inline CSS (like the old code)
-        const styleElement = document.createElement("style");
-        styleElement.id = "robocrop-highlighting-styles";
-        styleElement.textContent = `
-    .target_identified {
-      display: inline-flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      border: 1px solid #00ff00 !important;
-      box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00 !important;
-      min-width: 1em !important;
-      height: 1.2em !important;
-      padding: 0 2px !important;
-      margin: 0 1px !important;
-      vertical-align: middle !important;
-      box-sizing: border-box !important;
-      position: relative !important;
-      z-index: 1 !important;
-      background-color: rgba(0, 0, 0, 0.7) !important;
-    }
-    
-    .crosshair-horizontal {
-      position: absolute !important;
-      left: -15px !important;
-      right: -15px !important;
-      top: 50% !important;
-      height: 1px !important;
-      background: linear-gradient(to right, transparent, #00ff00 15px, #00ff00 calc(100% - 15px), transparent) !important;
-      transform: translateY(-50%) !important;
-      pointer-events: none !important;
-      z-index: 0 !important;
-      box-shadow: 0 0 3px #00ff00 !important;
-    }
-    
-    .crosshair-vertical {
-      position: absolute !important;
-      top: -15px !important;
-      bottom: -15px !important;
-      left: 50% !important;
-      width: 1px !important;
-      background: linear-gradient(to bottom, transparent, #00ff00 15px, #00ff00 calc(100% - 15px), transparent) !important;
-      transform: translateX(-50%) !important;
-      pointer-events: none !important;
-      z-index: 0 !important;
-      box-shadow: 0 0 3px #00ff00 !important;
-    }
-    
-    .text-wrapper {
-      position: relative !important;
-      z-index: 2 !important;
-      color: #ffffff !important;
-      text-shadow: 0 0 2px #00ff00 !important;
-    }
-    
-    .target_identified:hover::after {
-      content: attr(title) !important;
-      position: absolute !important;
-      bottom: 125% !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      padding: 5px 10px !important;
-      background: rgba(0, 0, 0, 0.8) !important;
-      color: #00ff00 !important;
-      font-family: 'Orbitron', sans-serif !important;
-      font-weight: 600 !important;
-      font-size: 12px !important;
-      white-space: nowrap !important;
-      z-index: 1000 !important;
-      border: 1px solid #00ff00 !important;
-      box-shadow: 0 0 5px rgba(0, 255, 0, 0.5) !important;
-      border-radius: 4px !important;
-      pointer-events: none !important;
-    }
-  `;
-        document.head.appendChild(styleElement);
-        //  inject Google Font for tooltips
-        if (!document.getElementById("orbitron-font-style")) {
-            const fontLink = document.createElement("link");
-            fontLink.rel = "stylesheet";
-            fontLink.href =
-                "https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap";
-            fontLink.id = "orbitron-font-style";
-            document.head.appendChild(fontLink);
-        }
-    };
-    // Helper function: Create a span element for a target character
-    const createCharacterSpan = (foundChar) => {
-        const span = document.createElement("span");
-        span.className = "target_identified";
-        // Add character data as attributes for later reference
-        span.setAttribute("data-char-code", foundChar.charCode.toString(16));
-        span.setAttribute("data-char-label", foundChar.label);
-        span.setAttribute("data-category", foundChar.category);
-        span.title = foundChar.label; // Tooltip text
-        // Create horizontal crosshair line
-        const horizontalLine = document.createElement("div");
-        horizontalLine.className = "crosshair-horizontal";
-        span.appendChild(horizontalLine);
-        // Create vertical crosshair line
-        const verticalLine = document.createElement("div");
-        verticalLine.className = "crosshair-vertical";
-        span.appendChild(verticalLine);
-        // Create text wrapper for the character
-        const textWrapper = document.createElement("span");
-        textWrapper.className = "text-wrapper";
-        textWrapper.textContent = foundChar.char;
-        span.appendChild(textWrapper);
-        return span;
-    };
-    // Helper function: Process a single text node and create highlighted fragments
-    const processTextNode = (textNode, foundCharacters) => {
-        const text = textNode.textContent || "";
-        const fragment = document.createDocumentFragment();
-        // Get characters that belong to this specific text node
-        const nodeCharacters = foundCharacters.filter((foundChar) => foundChar.textNode === textNode);
-        // Sort by position to process in order
-        nodeCharacters.sort((a, b) => a.position - b.position);
-        let lastPosition = 0;
-        nodeCharacters.forEach((foundChar) => {
-            // Add any regular text before this character
-            if (foundChar.position > lastPosition) {
-                const beforeText = text.substring(lastPosition, foundChar.position);
-                fragment.appendChild(document.createTextNode(beforeText));
-            }
-            // Create and add the highlighted span for this character
-            const span = createCharacterSpan(foundChar);
-            fragment.appendChild(span);
-            lastPosition = foundChar.position + 1;
+        boundarySpans.forEach((boundarySpan, index) => {
+            const parent = boundarySpan.parentNode;
+            if (!parent)
+                return;
+            // Get the original text from the data attribute
+            const originalText = boundarySpan.getAttribute("data-original-text") || "";
+            // Create a new text node with the original content
+            const textNode = document.createTextNode(originalText);
+            // Replace the boundary span with the original text node
+            parent.replaceChild(textNode, boundarySpan);
         });
-        // Add any remaining text after the last character
-        if (lastPosition < text.length) {
-            const afterText = text.substring(lastPosition);
-            fragment.appendChild(document.createTextNode(afterText));
-        }
-        return fragment;
-    };
-    // Main highlighting function: Apply visual highlighting to detected characters
-    const highlightCharacters = async (scanResults) => {
-        console.log("🎨 PHASE 2: Highlighting characters...");
-        try {
-            // Check if highlighting has already been applied
-            if (document.body.getAttribute("data-robocrop-highlighted") === "true") {
-                console.log("⚠️ Characters already highlighted, skipping");
-                return { success: true, highlightedCount: 0 };
-            }
-            // Inject CSS styles
-            injectHighlightingStyles();
-            // Mark as highlighted to prevent duplicate processing
-            document.body.setAttribute("data-robocrop-highlighted", "true");
-            let highlightedCount = 0;
-            // Group found characters by their text node for efficient processing
-            const nodeMap = new Map();
-            scanResults.foundCharacters.forEach((foundChar) => {
-                if (!nodeMap.has(foundChar.textNode)) {
-                    nodeMap.set(foundChar.textNode, []);
-                }
-                nodeMap.get(foundChar.textNode).push(foundChar);
-            });
-            console.log(`📝 Processing ${nodeMap.size} text nodes with characters`);
-            // Process each text node that contains target characters
-            nodeMap.forEach((characters, textNode) => {
-                try {
-                    // Create the highlighted fragment for this text node
-                    const fragment = processTextNode(textNode, characters);
-                    // Replace the original text node with our highlighted fragment
-                    if (textNode.parentNode) {
-                        textNode.parentNode.replaceChild(fragment, textNode);
-                        highlightedCount += characters.length;
-                    }
-                }
-                catch (error) {
-                    console.error("❌ Error processing text node:", error);
-                }
-            });
-            console.log(`✅ Highlighting complete: ${highlightedCount} characters highlighted`);
-            return { success: true, highlightedCount };
-        }
-        catch (error) {
-            console.error("❌ Error in highlighting phase:", error);
-            return { success: false, highlightedCount: 0 };
-        }
-    };
-    // Helper function: Remove all highlighting from the page
-    const removeHighlighting = () => {
-        console.log("🧹 Removing character highlighting...");
-        try {
-            // Find all highlighted spans
-            const targetSpans = document.querySelectorAll(".target_identified");
-            let removedCount = 0;
-            targetSpans.forEach((span) => {
-                try {
-                    // Get the original character text from the text wrapper
-                    const textWrapper = span.querySelector(".text-wrapper");
-                    const originalText = textWrapper?.textContent || "";
-                    // Create a text node with the original character
-                    const textNode = document.createTextNode(originalText);
-                    // Replace the span with the text node
-                    span.parentNode?.replaceChild(textNode, span);
-                    removedCount++;
-                }
-                catch (error) {
-                    console.error("❌ Error removing span:", error);
-                }
-            });
-            // Remove the highlighting styles
-            const styleElement = document.getElementById("robocrop-highlighting-styles");
-            if (styleElement) {
-                styleElement.remove();
-            }
-            // Remove the highlighted marker
-            document.body.removeAttribute("data-robocrop-highlighted");
-            console.log(`✅ Removed ${removedCount} highlighted characters`);
-            return { success: true, removedCount };
-        }
-        catch (error) {
-            console.error("❌ Error removing highlighting:", error);
-            return { success: false, removedCount: 0 };
-        }
     };
 
-    const removeAllEffects = () => {
-        console.log("Removing all visual effects from the page");
-        // Remove CRT effect style
-        const styleElement = document.getElementById("crt-effect-style");
-        if (styleElement) {
-            styleElement.remove();
-        }
-        // Remove tooltip style
-        const tooltipStyle = document.getElementById("tooltip-style");
-        if (tooltipStyle) {
-            tooltipStyle.remove();
-        }
-        // Remove Orbitron font
-        const fontStyle = document.getElementById("orbitron-font-style");
-        if (fontStyle) {
-            fontStyle.remove();
-        }
-        document.body.classList.remove("crt");
-        document.body.setAttribute("data-crt-active", "false");
-        const targetSpans = document.querySelectorAll(".target_identified");
-        console.log(`Found ${targetSpans.length} highlighted spans to restore`);
-        targetSpans.forEach((span, index) => {
-            try {
-                const originalText = span.textContent || "";
-                const textNode = document.createTextNode(originalText);
-                span.parentNode?.replaceChild(textNode, span);
-            }
-            catch (error) {
-                console.error(`Error restoring span #${index}:`, error);
-            }
-        });
-        document.body.removeAttribute("data-crosshairs-applied");
-        console.log("All visual effects removed from the page");
-    };
+    // =============================================================================
+    // ADD CRT EFFECT
+    // =============================================================================
+    /*
+    This function adds the CRT effect to the page.
+
+    This is done separately in case we want to add more granular control over which effects are applied/not applied.
+    */
     const addCRTEffect = () => {
-        console.log("Adding CRT effect to the page");
-        // check if we already added the style
-        if (document.getElementById("crt-effect-style")) {
-            console.log("CRT effect already added");
+        // Check if effect is already active
+        if (document.body.classList.contains("crt-effect")) {
             return;
         }
-        // create a style element for the CRT effect
-        const styleElement = document.createElement("style");
-        styleElement.id = "crt-effect-style";
-        styleElement.textContent = `
-        @keyframes flicker {
-          0% {
-            opacity: 0.27861;
-          }
-          5% {
-            opacity: 0.34769;
-          }
-          10% {
-            opacity: 0.23604;
-          }
-          15% {
-            opacity: 0.90626;
-          }
-          20% {
-            opacity: 0.18128;
-          }
-          25% {
-            opacity: 0.83891;
-          }
-          30% {
-            opacity: 0.65583;
-          }
-          35% {
-            opacity: 0.67807;
-          }
-          40% {
-            opacity: 0.26559;
-          }
-          45% {
-            opacity: 0.84693;
-          }
-          50% {
-            opacity: 0.96019;
-          }
-          55% {
-            opacity: 0.08594;
-          }
-          60% {
-            opacity: 0.20313;
-          }
-          65% {
-            opacity: 0.71988;
-          }
-          70% {
-            opacity: 0.53455;
-          }
-          75% {
-            opacity: 0.37288;
-          }
-          80% {
-            opacity: 0.71428;
-          }
-          85% {
-            opacity: 0.70419;
-          }
-          90% {
-            opacity: 0.7003;
-          }
-          95% {
-            opacity: 0.36108;
-          }
-          100% {
-            opacity: 0.24387;
-          }
-        }
-        @keyframes textShadow {
-          0% {
-            text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          5% {
-            text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          10% {
-            text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          15% {
-            text-shadow: 0.40218538552878136px 0 1px rgba(0,30,255,0.5), -0.40218538552878136px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          20% {
-            text-shadow: 3.4794037899852017px 0 1px rgba(0,30,255,0.5), -3.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          25% {
-            text-shadow: 1.6125630401149584px 0 1px rgba(0,30,255,0.5), -1.6125630401149584px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          30% {
-            text-shadow: 0.7015590085143956px 0 1px rgba(0,30,255,0.5), -0.7015590085143956px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          35% {
-            text-shadow: 3.896914047650351px 0 1px rgba(0,30,255,0.5), -3.896914047650351px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          40% {
-            text-shadow: 3.870905614848819px 0 1px rgba(0,30,255,0.5), -3.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          45% {
-            text-shadow: 2.231056963361899px 0 1px rgba(0,30,255,0.5), -2.231056963361899px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          50% {
-            text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          55% {
-            text-shadow: 2.3758461067427543px 0 1px rgba(0,30,255,0.5), -2.3758461067427543px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          60% {
-            text-shadow: 2.202193051050636px 0 1px rgba(0,30,255,0.5), -2.202193051050636px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          65% {
-            text-shadow: 2.8638780614874975px 0 1px rgba(0,30,255,0.5), -2.8638780614874975px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          70% {
-            text-shadow: 0.48874025155497314px 0 1px rgba(0,30,255,0.5), -0.48874025155497314px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          75% {
-            text-shadow: 1.8948491305757957px 0 1px rgba(0,30,255,0.5), -1.8948491305757957px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          80% {
-            text-shadow: 0.0833037308038857px 0 1px rgba(0,30,255,0.5), -0.0833037308038857px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          85% {
-            text-shadow: 0.09769827255241735px 0 1px rgba(0,30,255,0.5), -0.09769827255241735px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          90% {
-            text-shadow: 3.443339761481782px 0 1px rgba(0,30,255,0.5), -3.443339761481782px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          95% {
-            text-shadow: 2.1841838852799786px 0 1px rgba(0,30,255,0.5), -2.1841838852799786px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-          100% {
-            text-shadow: 2.6208764473832513px 0 1px rgba(0,30,255,0.5), -2.6208764473832513px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-          }
-        }
-        .crt::after {
-          content: " ";
-          display: block;
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          background: rgba(18, 16, 16, 0.1);
-          opacity: 0;
-          z-index: 9998;
-          pointer-events: none;
-          animation: flicker 0.15s infinite;
-        }
-        .crt::before {
-          content: " ";
-          display: block;
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-          z-index: 9997;
-          background-size: 100% 2px, 3px 100%;
-          pointer-events: none;
-        }
-        .crt {
-          animation: textShadow 1.6s infinite;
-        }
-      `;
-        document.head.appendChild(styleElement);
-        document.body.classList.add("crt");
-        document.body.setAttribute("data-crt-active", "true");
-        // add a click listener to the document to remove CRT effect on any click
-        if (!document.body.hasAttribute("data-crt-click-listener")) {
-            document.body.setAttribute("data-crt-click-listener", "true");
-            document.addEventListener("click", (event) => {
-                // only process if CRT is active and this is not a click on a popup button
-                // (popup buttons won't be in the main document)
-                if (document.body.getAttribute("data-crt-active") === "true") {
-                    // check if the clicked element is a span with our target class
-                    const target = event.target;
-                    const isOurSpan = target.classList?.contains("target_identified");
-                    const isButton = target.tagName === "BUTTON";
-                    // if it's not our span or a button, remove the effect
-                    if (!isOurSpan && !isButton) {
-                        console.log("Click detected outside of targets, removing all effects");
-                        removeAllEffects();
-                    }
-                }
-            });
-        }
-        // add visibility change listener if not already added
-        if (!document.body.hasAttribute("data-crt-visibility-listener")) {
-            document.body.setAttribute("data-crt-visibility-listener", "true");
-            document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === "hidden" &&
-                    document.body.getAttribute("data-crt-active") === "true") {
-                    console.log("Page visibility changed to hidden, removing all effects");
-                    removeAllEffects();
-                }
-            });
-        }
-        console.log("CRT effect added to the page");
+        // Add the CRT effect class
+        document.body.classList.add("crt-effect");
+    };
+    // =============================================================================
+    // REMOVE CRT EFFECT
+    // =============================================================================
+    /*
+    This function removes the CRT effect from the page.
+    */
+    const removeCRTEffect = () => {
+        // Remove the CRT effect class
+        document.body.classList.remove("crt-effect");
     };
 
-    console.log("🔥 Content script starting to load");
-    // Announce that content script is ready
-    browser.runtime
-        .sendMessage({ action: "contentScriptReady" })
-        .then(() => console.log("✅ Content script announced itself"))
-        .catch((error) => console.log("❌ Failed to announce content script:", error));
+    // =============================================================================
+    // INJECT CSS
+    // =============================================================================
+    /*
+    This was the only way I could get the CSS to work.
+
+    configuring webresources in manifest.json was giving me issues.
+    */
+    const injectCSS = () => {
+        try {
+            // Check if CSS is already injected to avoid duplicates
+            if (document.getElementById("robocrop-styles")) {
+                return;
+            }
+            const link = document.createElement("link");
+            link.id = "robocrop-styles";
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = browser.runtime.getURL("src/styles/content.css");
+            document.head.appendChild(link);
+        }
+        catch (error) {
+            console.error("❌ Failed to inject CSS:", error);
+        }
+    };
+
+    // =============================================================================
+    // INITIALIZE CONTENT SCRIPT
+    // =============================================================================
+    /*
+    This function initializes the content script.
+
+    It also injects the CSS into the page.
+
+    It also listens for messages from the popup.
+
+    When a message is received from the popup, it will call the appropriate function to handle the request.
+
+    It also restores the page to its original state when the window is clicked, which trades off efficiency (because we have to loop through all the nodes again) to avoid complexity (I added so many spans/attributes and classnames when 'finding' the characters that deconstructing and reassumebling select parts of the html just seemed to be more hassle than it was worth.
+
+    It also adds/removes the CRT effect to the page
+
+    restorePage is also added to the window click event listener because... it just felt weird when the CSS persisted after closing the popup.
+    */
     function initializeContentScript() {
-        console.log("🎯 Content script initializing on:", window.location.href);
+        injectCSS();
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-            console.log("📩 Content script received message:", message);
-            // Handle async operations properly
-            const handleMessage = async () => {
-                try {
-                    if (message.action === "scan") {
-                        console.log("🔍 Starting page scan");
-                        const { settings } = message;
-                        const { enhancedVisuals } = settings;
-                        console.log("settings in content script", settings);
-                        // Phase 1: Scan for characters
-                        const scanResults = await scanPage(settings);
-                        console.log("scan results in content script", scanResults);
-                        // Phase 2: Apply highlighting if characters were found
-                        if (scanResults.foundCharacters.length > 0) {
-                            const highlightResults = await highlightCharacters(scanResults);
-                            console.log("highlight results in content script", highlightResults);
-                        }
-                        // Phase 3: Apply enhanced visuals if enabled
-                        if (enhancedVisuals) {
-                            addCRTEffect();
-                        }
-                        const response = {
-                            received: true,
-                            status: "scan completed",
-                            countData: scanResults.countData,
-                            foundCount: scanResults.foundCharacters.length,
-                        };
-                        sendResponse(response);
-                        return;
-                    }
-                    if (message.action === "cleanup") {
-                        console.log("🧹 Received cleanup message from popup");
-                        try {
-                            // Remove highlighting
-                            removeHighlighting();
-                            // Remove CRT effects
-                            removeAllEffects();
-                            sendResponse({ received: true, status: "cleanup completed" });
-                        }
-                        catch (error) {
-                            console.error("❌ Error during cleanup:", error);
-                            sendResponse({
-                                received: false,
-                                error: error instanceof Error ? error.message : String(error),
-                            });
-                        }
-                        return;
-                    }
+            const { action, settings } = message;
+            restorePage();
+            removeCRTEffect();
+            if (action === "findCharacters") {
+                const results = findCharacters(settings);
+                const response = {
+                    success: true,
+                    results: results,
+                };
+                if (results.totalCount > 0) {
+                    addCRTEffect();
                 }
-                catch (error) {
-                    console.error("❌ Error handling message:", error);
-                    sendResponse({
-                        received: false,
-                        error: error instanceof Error ? error.message : String(error),
-                    });
-                }
-            };
-            // Execute async handler
-            handleMessage();
-            // Return true to indicate we will send a response asynchronously
+                sendResponse(response);
+                return;
+            }
+            if (action === "replaceCharacters") {
+                const results = replaceCharacters(settings);
+                const response = {
+                    success: true,
+                    replacements: results.replacements,
+                };
+                sendResponse(response);
+                return true;
+            }
             return true;
         });
     }
-    // Initialize once when the script loads
     initializeContentScript();
-    // Log that we reached the end of the script
-    console.log("🔥 Content script evaluation complete");
+    window.addEventListener("click", () => {
+        removeCRTEffect();
+        restorePage();
+    });
 
 })();

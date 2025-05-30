@@ -12,14 +12,7 @@ export default [
     },
     plugins: [typescript(), resolve(), commonjs()],
   },
-  {
-    input: "src/scripts/background/index.ts",
-    output: {
-      file: "dist/scripts/background.js",
-      format: "iife",
-    },
-    plugins: [typescript(), resolve(), commonjs()],
-  },
+  // Popup Bundle
   {
     input: "src/scripts/popup/index.ts",
     output: {
